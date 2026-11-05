@@ -4,6 +4,7 @@ import { useState, useId } from "react";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { formatPesewas } from "@/lib/formatting/currency";
+import { authFetch } from "@/lib/auth/auth-fetch";
 import { Loader2, X, AlertTriangle, RotateCcw } from "lucide-react";
 
 interface ReversePaymentDialogProps {
@@ -47,7 +48,7 @@ export function ReversePaymentDialog({
     setIsSubmitting(true);
 
     try {
-      const response = await fetch(`/api/payments/${payment.id}/reverse`, {
+      const response = await authFetch(`/api/payments/${payment.id}/reverse`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ reason: reason.trim() }),

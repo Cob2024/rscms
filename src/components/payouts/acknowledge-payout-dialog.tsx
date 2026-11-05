@@ -4,6 +4,7 @@ import { useState, useId } from "react";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { formatPesewas } from "@/lib/formatting/currency";
+import { authFetch } from "@/lib/auth/auth-fetch";
 import { Loader2, X, CheckCheck, ShieldCheck } from "lucide-react";
 
 interface PayoutRecord {
@@ -49,7 +50,7 @@ export function AcknowledgePayoutDialog({
     setIsSubmitting(true);
 
     try {
-      const response = await fetch(`/api/payouts/${payout.id}/acknowledge`, {
+      const response = await authFetch(`/api/payouts/${payout.id}/acknowledge`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ acknowledgement: acknowledgement.trim() }),

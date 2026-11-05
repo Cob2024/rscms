@@ -19,6 +19,7 @@ import { type ReceiptData } from "@/services/receipt.service";
 import { formatDate } from "@/lib/formatting/date";
 import { formatPesewas } from "@/lib/formatting/currency";
 import { downloadReceiptPdf } from "@/lib/receipts/pdf-generator";
+import { authFetch } from "@/lib/auth/auth-fetch";
 
 interface ReceiptDialogProps {
   isOpen: boolean;
@@ -45,7 +46,7 @@ export function ReceiptDialog({ isOpen, paymentId, onClose }: ReceiptDialogProps
     setIsLoading(true);
     setError(null);
 
-    fetch(`/api/payments/${paymentId}/receipt`)
+    authFetch(`/api/payments/${paymentId}/receipt`)
       .then(async (res) => {
         const data = await res.json();
         if (!res.ok) {

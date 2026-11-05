@@ -3,11 +3,57 @@
 import { useState } from "react";
 import { Download, FileSpreadsheet } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Card,CardContent,CardHeader,CardTitle } from "@/components/ui/card";
-import { supabaseBrowser } from "@/lib/auth/supabase-browser";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { authFetch } from "@/lib/auth/auth-fetch";
 
-const reports=[{type:"monthly",title:"Contribution history",description:"Expected obligations, verified payments and remaining balances by member and period."},{type:"outstanding",title:"Outstanding balances",description:"Member obligations with an unpaid balance across recorded cycles."},{type:"payouts",title:"Payout statement",description:"Expected, authorized and disbursed amounts, references and recipient acknowledgements."}];
-export default function ReportsPage(){const [error,setError]=useState("");const [loading,setLoading]=useState("");async function download(type:string){setLoading(type);setError("");const {data:{session}}=await supabaseBrowser.auth.getSession().catch(()=>({data:{session:null}}));const headers:Record<string,string>={};if(session?.access_token)headers["Authorization"]=`Bearer ${session.access_token}`;const response=await fetch(`/api/reports?type=${type}`,{headers});if(!response.ok){const body=await response.json().catch(()=>({}));setError(body.error??"Could not generate this report.");setLoading("");return;}const blob=await response.blob();const disposition=response.headers.get("Content-Disposition");const filename=disposition?.match(/filename="([^"]+)"/)?.[1]??`${type}.csv`;const url=URL.createObjectURL(blob);const anchor=document.createElement("a");anchor.href=url;anchor.download=filename;anchor.click();URL.revokeObjectURL(url);setLoading("");}  return (
+const reports = [
+  {
+    type: "monthly",
+    title: "Contribution history",
+    description: "Expected obligations, verified payments and remaining balances by member and period.",
+  },
+  {
+    type: "outstanding",
+    title: "Outstanding balances",
+    description: "Member obligations with an unpaid balance across recorded cycles.",
+  },
+  {
+    type: "payouts",
+    title: "Payout statement",
+    description: "Expected, authorized and disbursed amounts, references and recipient acknowledgements.",
+  },
+];
+
+export default function ReportsPage() {
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState("");
+
+  async function download(type: string) {
+    setLoading(type);
+    setError("");
+    try {
+      const response = await authFetch(`/api/reports?type=${type}`);
+      if (!response.ok) {
+        const body = await response.json().catch(() => ({}));
+        setError(body.error ?? "Could not generate this report.");
+        setLoading("");
+        return;
+      }
+      const blob = await response.blob();
+      const disposition = response.headers.get("Content-Disposition");
+      const filename = disposition?.match(/filename="([^"]+)"/)?.[1] ?? `${type}.csv`;
+      const url = URL.createObjectURL(blob);
+      const anchor = document.createElement("a");
+      anchor.href = url;
+      anchor.download = filename;
+      anchor.click();
+      URL.revokeObjectURL(url);
+    } catch {
+      setError("Network error while generating report.");
+    } finally {
+      setLoading("");
+    }
+  }  return (
     <div className="mx-auto max-w-5xl space-y-7">
       <header>
         <p className="text-xs font-bold uppercase tracking-[0.16em] text-[#087F5B]">Financial Records</p>

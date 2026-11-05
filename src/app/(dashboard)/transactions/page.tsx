@@ -28,6 +28,7 @@ import {
 } from "@/components/ui/table";
 import { formatPesewas } from "@/lib/formatting/currency";
 import { formatDateTime } from "@/lib/formatting/date";
+import { authFetch } from "@/lib/auth/auth-fetch";
 import { TransactionType } from "@prisma/client";
 import { TrialBalanceCard } from "@/components/ledger/trial-balance-card";
 import { AccountBalancesGrid } from "@/components/ledger/account-balances-grid";
@@ -85,8 +86,8 @@ export default function TransactionsPage() {
       }
 
       const [ledgerRes, txRes] = await Promise.all([
-        fetch("/api/ledger"),
-        fetch(`/api/transactions?${params.toString()}`),
+        authFetch("/api/ledger"),
+        authFetch(`/api/transactions?${params.toString()}`),
       ]);
 
       if (!ledgerRes.ok || !txRes.ok) {

@@ -7,6 +7,7 @@ import { Label } from "@/components/ui/label";
 import { Card, CardContent } from "@/components/ui/card";
 import { Loader2, AlertCircle, X, Calendar, ArrowRight } from "lucide-react";
 import { addMonths, format, startOfMonth } from "date-fns";
+import { authFetch } from "@/lib/auth/auth-fetch";
 
 interface CreateCycleDialogProps {
   isOpen: boolean;
@@ -67,7 +68,7 @@ export function CreateCycleDialog({
         dueDates: dueDates.map((d) => new Date(`${d}T23:59:59Z`).toISOString()),
       };
 
-      const res = await fetch("/api/cycles", {
+      const res = await authFetch("/api/cycles", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),

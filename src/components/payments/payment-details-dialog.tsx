@@ -6,6 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { formatPesewas } from "@/lib/formatting/currency";
 import { formatDate } from "@/lib/formatting/date";
 import { X, Loader2, ArrowRight, BookOpen, ShieldCheck, Clock, Receipt } from "lucide-react";
+import { authFetch } from "@/lib/auth/auth-fetch";
 
 interface PaymentDetailsDialogProps {
   isOpen: boolean;
@@ -28,7 +29,7 @@ export function PaymentDetailsDialog({
     if (isOpen && paymentId) {
       setLoading(true);
       setError(null);
-      fetch(`/api/payments/${paymentId}`)
+      authFetch(`/api/payments/${paymentId}`)
         .then((res) => res.json())
         .then((json) => {
           if (json.error) setError(json.error);

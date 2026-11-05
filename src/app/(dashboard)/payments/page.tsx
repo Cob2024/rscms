@@ -42,6 +42,7 @@ import { ReversePaymentDialog } from "@/components/payments/reverse-payment-dial
 import { PaymentDetailsDialog } from "@/components/payments/payment-details-dialog";
 import { ReceiptDialog } from "@/components/payments/receipt-dialog";
 import { StatusBadge } from "@/components/ui/status-badge";
+import { authFetch } from "@/lib/auth/auth-fetch";
 
 interface Member {
   id: string;
@@ -159,7 +160,7 @@ function PaymentsPageContent() {
       if (channelFilter !== "ALL") queryParams.set("channel", channelFilter);
       if (memberFilter !== "ALL") queryParams.set("memberId", memberFilter);
 
-      const res = await fetch(`/api/payments?${queryParams.toString()}`);
+      const res = await authFetch(`/api/payments?${queryParams.toString()}`);
       const data = await res.json();
 
       if (!res.ok) {
@@ -209,7 +210,7 @@ function PaymentsPageContent() {
   const handleVerifyPending = async (paymentId: string) => {
     try {
       setIsVerifyingId(paymentId);
-      const res = await fetch(`/api/payments/${paymentId}/verify`, {
+      const res = await authFetch(`/api/payments/${paymentId}/verify`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({}),

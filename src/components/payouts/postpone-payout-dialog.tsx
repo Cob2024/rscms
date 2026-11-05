@@ -4,6 +4,7 @@ import { useState, useId } from "react";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { formatPesewas } from "@/lib/formatting/currency";
+import { authFetch } from "@/lib/auth/auth-fetch";
 import { Loader2, X, Clock, AlertTriangle } from "lucide-react";
 
 interface ScheduleItem {
@@ -51,7 +52,7 @@ export function PostponePayoutDialog({
     setIsSubmitting(true);
 
     try {
-      const response = await fetch(`/api/payouts/${schedule.id}/postpone`, {
+      const response = await authFetch(`/api/payouts/${schedule.id}/postpone`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ reason: reason.trim() }),

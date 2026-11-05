@@ -9,6 +9,7 @@ import { Badge } from "@/components/ui/badge";
 import { formatPesewas } from "@/lib/formatting/currency";
 import { formatDate } from "@/lib/formatting/date";
 import { paymentChannels } from "@/lib/validation/payment";
+import { authFetch } from "@/lib/auth/auth-fetch";
 import {
   Loader2,
   X,
@@ -304,7 +305,7 @@ export function ManualPaymentDialog({
     setIsSubmitting(true);
 
     try {
-      const response = await fetch("/api/payments", {
+      const response = await authFetch("/api/payments", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({

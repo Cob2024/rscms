@@ -28,6 +28,7 @@ import {
 import { StatusBadge } from "@/components/members/status-badge";
 import { MemberFormDialog } from "@/components/members/member-form-dialog";
 import { StatusDialog } from "@/components/members/status-dialog";
+import { authFetch } from "@/lib/auth/auth-fetch";
 import { formatPesewas } from "@/lib/formatting/currency";
 import { MemberStatus } from "@prisma/client";
 
@@ -73,7 +74,7 @@ export default function MembersPage() {
     setIsLoading(true);
     setError(null);
     try {
-      const res = await fetch("/api/members");
+      const res = await authFetch("/api/members");
       const data = await res.json();
       if (!res.ok) {
         setError(data.error || "Failed to load members.");

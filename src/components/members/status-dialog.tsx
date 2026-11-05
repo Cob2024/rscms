@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { MemberStatus } from "@prisma/client";
+import { authFetch } from "@/lib/auth/auth-fetch";
 import { Loader2, AlertCircle, X } from "lucide-react";
 
 interface StatusDialogProps {
@@ -39,7 +40,7 @@ export function StatusDialog({
     setError(null);
 
     try {
-      const res = await fetch(`/api/members/${member?.id}/status`, {
+      const res = await authFetch(`/api/members/${member?.id}/status`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({

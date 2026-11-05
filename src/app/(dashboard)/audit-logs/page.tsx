@@ -2,13 +2,40 @@
 
 import { useCallback,useEffect,useState } from "react";
 import { Search } from "lucide-react";
-import { Card,CardContent } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { Table,TableBody,TableCell,TableHead,TableHeader,TableRow } from "@/components/ui/table";
-import { supabaseBrowser } from "@/lib/auth/supabase-browser";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { authFetch } from "@/lib/auth/auth-fetch";
 import { formatDateTime } from "@/lib/formatting/date";
-type Log={id:string;action:string;entityType:string;entityId:string;oldValues:unknown;newValues:unknown;createdAt:string};
-export default function AuditLogsPage(){const [logs,setLogs]=useState<Log[]>([]);const [query,setQuery]=useState("");const [loading,setLoading]=useState(true);const [error,setError]=useState("");const load=useCallback(async(value:string)=>{const {data:{session}}=await supabaseBrowser.auth.getSession().catch(()=>({data:{session:null}}));const headers:Record<string,string>={};if(session?.access_token)headers["Authorization"]=`Bearer ${session.access_token}`;const response=await fetch(`/api/audit-logs?q=${encodeURIComponent(value)}`,{headers});const body=await response.json();if(response.ok)setLogs(body.logs);else setError(body.error??"Could not load audit history.");setLoading(false);},[]);useEffect(()=>{const timer=window.setTimeout(()=>void load(query),200);return()=>window.clearTimeout(timer);},[load,query]);  return (
+
+type Log = {
+  id: string;
+  action: string;
+  entityType: string;
+  entityId: string;
+  oldValues: unknown;
+  newValues: unknown;
+  createdAt: string;
+};
+
+export default function AuditLogsPage() {
+  const [logs, setLogs] = useState<Log[]>([]);
+  const [query, setQuery] = useState("");
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
+
+  const load = useCallback(async (value: string) => {
+    try {
+      const response = await authFetch(`/api/audit-logs?q=${encodeURIComponent(value)}`);
+      const body = await response.json();
+      if (response.ok) setLogs(body.logs);
+      else setError(body.error ?? "Could not load audit history.");
+    } catch {
+      setError("Network error while loading audit logs.");
+    } finally {
+      setLoading(false);
+    }
+  }, []);useEffect(()=>{const timer=window.setTimeout(()=>void load(query),200);return()=>window.clearTimeout(timer);},[load,query]);  return (
     <div className="mx-auto max-w-6xl space-y-7">
       <header>
         <p className="text-xs font-bold uppercase tracking-[0.16em] text-[#087F5B]">Accountability</p>

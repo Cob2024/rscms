@@ -34,6 +34,7 @@ import { StatusDialog } from "@/components/members/status-dialog";
 import { formatPesewas } from "@/lib/formatting/currency";
 import { formatDate, isPastDate } from "@/lib/formatting/date";
 import { MemberStatus, ContributionStatus, PayoutStatus } from "@prisma/client";
+import { authFetch } from "@/lib/auth/auth-fetch";
 
 interface ObligationRecord {
   id: string;
@@ -136,7 +137,7 @@ export default function MemberDetailsPage() {
     setIsLoading(true);
     setError(null);
     try {
-      const res = await fetch(`/api/members/${id}`);
+      const res = await authFetch(`/api/members/${id}`);
       const body = await res.json();
       if (!res.ok) {
         setError(body.error || "Failed to load member profile.");

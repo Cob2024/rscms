@@ -6,7 +6,7 @@ import { ArrowDownLeft, ArrowUpRight, CalendarDays, CircleAlert, CircleCheck, Cl
 import { StatusBadge } from "@/components/ui/status-badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { supabaseBrowser } from "@/lib/auth/supabase-browser";
+import { authFetch } from "@/lib/auth/auth-fetch";
 import { formatDate } from "@/lib/formatting/date";
 import { formatPesewas } from "@/lib/formatting/currency";
 import { cn } from "@/lib/utils";
@@ -24,14 +24,14 @@ export default function DashboardPage() {
   const [data, setData] = useState<DashboardData | null>(null);
   const [error, setError] = useState("");
   const load = useCallback(async () => {
-    const { data: { session } } = await supabaseBrowser.auth.getSession().catch(() => ({ data: { session: null } }));
-    const headers: Record<string, string> = {};
-    if (session?.access_token) {
-      headers["Authorization"] = `Bearer ${session.access_token}`;
+    try {
+      const response = await authFetch("/api/dashboard");
+      const body = await response.json();
+      if (response.ok) setData(body);
+      else setError(body.error ?? "Could not load dashboard.");
+    } catch {
+      setError("Network error while loading dashboard.");
     }
-    const response = await fetch("/api/dashboard", { headers });
-    const body = await response.json();
-    if (response.ok) setData(body); else setError(body.error ?? "Could not load dashboard.");
   }, []);
   useEffect(() => { void load(); }, [load]);
 

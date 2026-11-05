@@ -24,10 +24,32 @@ export function Header({ user }: HeaderProps) {
   const router = useRouter();
 
   useEffect(() => {
-    const { data: { subscription } } = supabaseBrowser.auth.onAuthStateChange((event, session) => {
-      if (event === "TOKEN_REFRESHED" && session?.access_token) {
+    // Synchronize session cookie immediately on mount
+    void supabaseBrowser.auth.getSession().then(({ data: { session } }) => {
+      if (session?.access_token) {
+        void fetch("/api/auth/session", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ accessToken: session.access_token }),
+        }).catch(() => {});
+      }
+    });
+
+    const {
+      data: { subscription },
+    } = supabaseBrowser.auth.onAuthStateChange((event, session) => {
+      if (
+        (event === "TOKEN_REFRESHED" ||
+          event === "SIGNED_IN" ||
+          event === "INITIAL_SESSION") &&
+        session?.access_token
+      ) {
         window.setTimeout(() => {
-          void fetch("/api/auth/session", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ accessToken: session.access_token }) });
+          void fetch("/api/auth/session", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ accessToken: session.access_token }),
+          }).catch(() => {});
         }, 0);
       }
     });

@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { formatPesewas } from "@/lib/formatting/currency";
+import { authFetch } from "@/lib/auth/auth-fetch";
 import {
   Loader2,
   X,
@@ -123,7 +124,7 @@ export function AuthorizePayoutDialog({
     setIsSubmitting(true);
 
     try {
-      const response = await fetch(`/api/payouts/${schedule.id}/authorize`, {
+      const response = await authFetch(`/api/payouts/${schedule.id}/authorize`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({

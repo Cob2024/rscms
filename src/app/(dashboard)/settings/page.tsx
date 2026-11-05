@@ -14,7 +14,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { supabaseBrowser } from "@/lib/auth/supabase-browser";
+import { authFetch } from "@/lib/auth/auth-fetch";
 import { formatPesewas } from "@/lib/formatting/currency";
 
 type GroupData = {
@@ -59,25 +59,10 @@ export default function SettingsPage() {
   const [capacityInput, setCapacityInput] = useState<number>(4);
   const [amountInput, setAmountInput] = useState<string>("250.00");
 
-  const authHeaders = useCallback(async () => {
-    const {
-      data: { session },
-    } = await supabaseBrowser.auth
-      .getSession()
-      .catch(() => ({ data: { session: null } }));
-    const headers: Record<string, string> = {};
-    if (session?.access_token) {
-      headers["Authorization"] = `Bearer ${session.access_token}`;
-    }
-    return headers;
-  }, []);
-
   const load = useCallback(async () => {
     setLoading(true);
     try {
-      const response = await fetch("/api/group", {
-        headers: await authHeaders(),
-      });
+      const response = await authFetch("/api/group");
       const body = await response.json();
       if (response.ok && body.group) {
         setGroup(body.group);
@@ -92,7 +77,7 @@ export default function SettingsPage() {
     } finally {
       setLoading(false);
     }
-  }, [authHeaders]);
+  }, []);
 
   useEffect(() => {
     void load();
@@ -111,10 +96,9 @@ export default function SettingsPage() {
       return;
     }
     try {
-      const response = await fetch("/api/group", {
+      const response = await authFetch("/api/group", {
         method: "POST",
         headers: {
-          ...(await authHeaders()),
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
@@ -158,10 +142,9 @@ export default function SettingsPage() {
     }
 
     try {
-      const response = await fetch("/api/group", {
+      const response = await authFetch("/api/group", {
         method: "PATCH",
         headers: {
-          ...(await authHeaders()),
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
@@ -208,10 +191,9 @@ export default function SettingsPage() {
     }
 
     try {
-      const response = await fetch("/api/cycles", {
+      const response = await authFetch("/api/cycles", {
         method: "POST",
         headers: {
-          ...(await authHeaders()),
           "Content-Type": "application/json",
         },
         body: JSON.stringify({

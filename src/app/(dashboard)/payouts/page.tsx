@@ -33,6 +33,7 @@ import { DisbursePayoutDialog } from "@/components/payouts/disburse-payout-dialo
 import { AcknowledgePayoutDialog } from "@/components/payouts/acknowledge-payout-dialog";
 import { PostponePayoutDialog } from "@/components/payouts/postpone-payout-dialog";
 import { PayoutDetailsDialog } from "@/components/payouts/payout-details-dialog";
+import { authFetch } from "@/lib/auth/auth-fetch";
 import { StatusBadge } from "@/components/ui/status-badge";
 
 interface ScheduleItem {
@@ -110,7 +111,7 @@ export default function PayoutsPage() {
       setLoading(true);
       setError(null);
 
-      const res = await fetch("/api/payouts");
+      const res = await authFetch("/api/payouts");
       const data = await res.json();
 
       if (!res.ok) {

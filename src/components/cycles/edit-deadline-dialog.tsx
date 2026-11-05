@@ -6,6 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Loader2, AlertCircle, X } from "lucide-react";
 import { formatDate } from "@/lib/formatting/date";
+import { authFetch } from "@/lib/auth/auth-fetch";
 
 interface EditDeadlineDialogProps {
   isOpen: boolean;
@@ -37,7 +38,7 @@ export function EditDeadlineDialog({
     setError(null);
 
     try {
-      const res = await fetch(`/api/contributions/${period?.id}/deadline`, {
+      const res = await authFetch(`/api/contributions/${period?.id}/deadline`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({

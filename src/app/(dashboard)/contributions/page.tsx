@@ -31,6 +31,7 @@ import { EditDeadlineDialog } from "@/components/cycles/edit-deadline-dialog";
 import { StatusBadge } from "@/components/ui/status-badge";
 import { formatPesewas } from "@/lib/formatting/currency";
 import { formatDate } from "@/lib/formatting/date";
+import { authFetch } from "@/lib/auth/auth-fetch";
 
 interface ObligationItem {
   id: string;
@@ -96,7 +97,7 @@ export default function ContributionsPage() {
     setIsLoading(true);
     setError(null);
     try {
-      const res = await fetch("/api/contributions");
+      const res = await authFetch("/api/contributions");
       const body = await res.json();
       if (!res.ok) {
         setError(body.error || "Failed to load contribution obligations.");

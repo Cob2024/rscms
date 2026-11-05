@@ -6,6 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { formatPesewas } from "@/lib/formatting/currency";
 import { paymentChannels } from "@/lib/validation/payment";
+import { authFetch } from "@/lib/auth/auth-fetch";
 import {
   Loader2,
   X,
@@ -114,7 +115,7 @@ export function DisbursePayoutDialog({
     setIsSubmitting(true);
 
     try {
-      const response = await fetch(`/api/payouts/${payout.id}/disburse`, {
+      const response = await authFetch(`/api/payouts/${payout.id}/disburse`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({

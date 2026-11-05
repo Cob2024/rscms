@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { createMemberSchema, type CreateMemberInput } from "@/lib/validation/member";
+import { authFetch } from "@/lib/auth/auth-fetch";
 import { Loader2, AlertCircle, X } from "lucide-react";
 
 interface MemberFormDialogProps {
@@ -88,7 +89,7 @@ export function MemberFormDialog({
       const url = isEditing ? `/api/members/${initialData?.id}` : "/api/members";
       const method = isEditing ? "PATCH" : "POST";
 
-      const res = await fetch(url, {
+      const res = await authFetch(url, {
         method,
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(data),

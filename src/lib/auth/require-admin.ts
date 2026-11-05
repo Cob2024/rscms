@@ -41,14 +41,37 @@ export async function requireAdmin(request: NextRequest): Promise<AuthenticatedA
     });
 
     const { data, error } = await supabase.auth.getUser(token);
-    if (error || !data.user) return null;
+    if (error || !data.user) {
+      if (error) {
+        console.warn("[requireAdmin] Supabase getUser error:", error.message);
+      }
+      return null;
+    }
 
-    const admin = await prisma.adminUser.findUnique({
+    let admin = await prisma.adminUser.findUnique({
       where: { supabaseId: data.user.id },
       select: { id: true, supabaseId: true, email: true, fullName: true },
     });
 
-    if (!admin) return null;
+    // Resilient fallback: link admin user by verified email if supabaseId was updated or re-provisioned
+    if (!admin && data.user.email) {
+      const adminByEmail = await prisma.adminUser.findUnique({
+        where: { email: data.user.email },
+        select: { id: true, supabaseId: true, email: true, fullName: true },
+      });
+      if (adminByEmail) {
+        admin = await prisma.adminUser.update({
+          where: { id: adminByEmail.id },
+          data: { supabaseId: data.user.id },
+          select: { id: true, supabaseId: true, email: true, fullName: true },
+        });
+      }
+    }
+
+    if (!admin) {
+      console.warn(`[requireAdmin] User ${data.user.email} (${data.user.id}) is not in admin_users table`);
+      return null;
+    }
 
     return {
       id: admin.id,

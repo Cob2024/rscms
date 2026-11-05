@@ -19,6 +19,7 @@ import {
   parseGhsToPesewas,
 } from "@/lib/formatting/currency";
 import { LedgerDirection } from "@prisma/client";
+import { authFetch } from "@/lib/auth/auth-fetch";
 import type { AccountBalanceSummary } from "@/services/ledger.service";
 
 interface RecordAdjustmentDialogProps {
@@ -147,7 +148,7 @@ export function RecordAdjustmentDialog({
 
     setLoading(true);
     try {
-      const response = await fetch("/api/transactions/adjustment", {
+      const response = await authFetch("/api/transactions/adjustment", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
