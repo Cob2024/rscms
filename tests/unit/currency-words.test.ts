@@ -34,3 +34,4 @@ describe("pesewasToWords utility", () => {
     expect(pesewasToWords(1250000)).toBe("Twelve Thousand Five Hundred Ghana Cedis Only");
   });
 });
+

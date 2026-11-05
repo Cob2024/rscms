@@ -251,3 +251,4 @@ export class ReceiptService {
     return this.formatReceiptData(payment, baseUrl);
   }
 }
+

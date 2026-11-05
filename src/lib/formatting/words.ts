@@ -106,3 +106,4 @@ export function pesewasToWords(pesewas: number): string {
 
   return parts.join(" and ") + " Only";
 }
+
