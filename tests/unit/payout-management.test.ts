@@ -124,7 +124,7 @@ describe("Fixed Payout Rotation & Payout Management (Phase 8)", () => {
     });
 
     it("blocks authorization of Position 2 if Position 1 is not yet acknowledged", () => {
-      const position1Payout = {
+      const position1Payout: { rotationPosition: number; status: PayoutStatus; acknowledgedAt: Date | null } = {
         rotationPosition: 1,
         status: PayoutStatus.DISBURSED, // Disbursed but not yet acknowledged
         acknowledgedAt: null,
