@@ -7,7 +7,26 @@ const groupInput = z.object({ name: z.string().trim().min(2).max(120), contribut
 
 export async function GET(request: NextRequest) {
   if (!(await requireAdmin(request))) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-  const group = await prisma.savingsGroup.findFirst({ where: { isActive: true }, include: { cycles: { orderBy: { cycleNumber: "desc" }, take: 3, include: { periods: { orderBy: { periodNumber: "asc" }, select: { id: true, periodNumber: true, startDate: true, dueDate: true } } } } } });
+  const group = await prisma.savingsGroup.findFirst({
+    where: { isActive: true },
+    include: {
+      members: {
+        where: { status: "ACTIVE" },
+        select: { id: true, fullName: true, rotationPosition: true },
+        orderBy: { rotationPosition: "asc" },
+      },
+      cycles: {
+        orderBy: { cycleNumber: "desc" },
+        take: 5,
+        include: {
+          periods: {
+            orderBy: { periodNumber: "asc" },
+            select: { id: true, periodNumber: true, startDate: true, dueDate: true },
+          },
+        },
+      },
+    },
+  });
   return NextResponse.json({ group });
 }
 

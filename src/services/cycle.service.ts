@@ -1,3 +1,4 @@
+import { randomUUID } from "crypto";
 import { prisma } from "@/lib/database/prisma";
 import { CycleStatus, PayoutStatus, ContributionStatus } from "@prisma/client";
 import { CreateCycleInput, UpdateDeadlineInput } from "@/lib/validation/cycle";
@@ -255,6 +256,27 @@ export class CycleService {
           },
         });
 
+        const allObligations: {
+          id: string;
+          periodId: string;
+          memberId: string;
+          amount: number;
+          paidAmount: number;
+          outstandingAmount: number;
+          status: ContributionStatus;
+        }[] = [];
+
+        const allPayoutSchedules: {
+          id: string;
+          cycleId: string;
+          periodId: string;
+          memberId: string;
+          rotationPosition: number;
+          expectedAmount: number;
+          scheduledDate: Date;
+          status: PayoutStatus;
+        }[] = [];
+
         // Generate 4 monthly contribution periods
         for (let i = 0; i < 4; i++) {
           const periodNumber = i + 1;
@@ -277,33 +299,41 @@ export class CycleService {
 
           // Generate 1 obligation per member (4 obligations per period)
           for (const member of members) {
-            await tx.contributionObligation.create({
-              data: {
-                periodId: period.id,
-                memberId: member.id,
-                amount: contributionAmount,
-                paidAmount: 0,
-                outstandingAmount: contributionAmount,
-                status: ContributionStatus.PENDING,
-              },
+            allObligations.push({
+              id: randomUUID(),
+              periodId: period.id,
+              memberId: member.id,
+              amount: contributionAmount,
+              paidAmount: 0,
+              outstandingAmount: contributionAmount,
+              status: ContributionStatus.PENDING,
             });
           }
 
           // Generate fixed Payout Schedule for this period
           // Period 1 -> Member 1, Period 2 -> Member 2, Period 3 -> Member 3, Period 4 -> Member 4
           const recipientMember = members[i];
-          await tx.payoutSchedule.create({
-            data: {
-              cycleId: cycle.id,
-              periodId: period.id,
-              memberId: recipientMember.id,
-              rotationPosition: periodNumber,
-              expectedAmount: monthlyTarget,
-              scheduledDate: dueDate,
-              status: PayoutStatus.SCHEDULED,
-            },
+          allPayoutSchedules.push({
+            id: randomUUID(),
+            cycleId: cycle.id,
+            periodId: period.id,
+            memberId: recipientMember.id,
+            rotationPosition: periodNumber,
+            expectedAmount: monthlyTarget,
+            scheduledDate: dueDate,
+            status: PayoutStatus.SCHEDULED,
           });
         }
+
+        // Batch insert all 16 obligations in ONE query
+        await tx.contributionObligation.createMany({
+          data: allObligations,
+        });
+
+        // Batch insert all 4 payout schedules in ONE query
+        await tx.payoutSchedule.createMany({
+          data: allPayoutSchedules,
+        });
 
         // Record in audit log
         await tx.auditLog.create({
@@ -325,7 +355,7 @@ export class CycleService {
 
         return cycle;
       },
-      { isolationLevel: "Serializable" }
+      { timeout: 30000, maxWait: 10000 }
     );
   }
 
