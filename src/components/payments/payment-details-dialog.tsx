@@ -5,18 +5,20 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { formatPesewas } from "@/lib/formatting/currency";
 import { formatDate } from "@/lib/formatting/date";
-import { X, Loader2, ArrowRight, BookOpen, ShieldCheck, Clock } from "lucide-react";
+import { X, Loader2, ArrowRight, BookOpen, ShieldCheck, Clock, Receipt } from "lucide-react";
 
 interface PaymentDetailsDialogProps {
   isOpen: boolean;
   onClose: () => void;
   paymentId: string | null;
+  onViewReceipt?: (paymentId: string) => void;
 }
 
 export function PaymentDetailsDialog({
   isOpen,
   onClose,
   paymentId,
+  onViewReceipt,
 }: PaymentDetailsDialogProps) {
   const [data, setData] = useState<any>(null);
   const [loading, setLoading] = useState(false);
@@ -279,7 +281,23 @@ export function PaymentDetailsDialog({
           </div>
         )}
 
-        <div className="mt-6 flex justify-end pt-3 border-t">
+        <div className="mt-6 flex items-center justify-between pt-3 border-t">
+          {onViewReceipt ? (
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => {
+                onViewReceipt(paymentId);
+                onClose();
+              }}
+              className="text-xs"
+            >
+              <Receipt className="mr-1.5 h-3.5 w-3.5 text-primary" />
+              View Official Receipt
+            </Button>
+          ) : (
+            <div />
+          )}
           <Button variant="outline" onClick={onClose}>
             Close
           </Button>

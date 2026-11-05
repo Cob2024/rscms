@@ -49,7 +49,7 @@ interface ObligationOption {
 interface ManualPaymentDialogProps {
   isOpen: boolean;
   onClose: () => void;
-  onSuccess: () => void;
+  onSuccess: (paymentId?: string) => void;
   members: MemberOption[];
   obligations: ObligationOption[];
   preselectedMemberId?: string;
@@ -325,7 +325,7 @@ export function ManualPaymentDialog({
         throw new Error(data.error || "Failed to record payment.");
       }
 
-      onSuccess();
+      onSuccess(data.payment?.id);
       onClose();
     } catch (err: any) {
       setError(err.message || "An unexpected error occurred.");

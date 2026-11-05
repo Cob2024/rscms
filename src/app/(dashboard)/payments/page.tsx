@@ -40,6 +40,7 @@ import { formatDate } from "@/lib/formatting/date";
 import { ManualPaymentDialog } from "@/components/payments/manual-payment-dialog";
 import { ReversePaymentDialog } from "@/components/payments/reverse-payment-dialog";
 import { PaymentDetailsDialog } from "@/components/payments/payment-details-dialog";
+import { ReceiptDialog } from "@/components/payments/receipt-dialog";
 
 interface Member {
   id: string;
@@ -144,6 +145,7 @@ function PaymentsPageContent() {
   const [isRecordOpen, setIsRecordOpen] = useState(false);
   const [reversingPayment, setReversingPayment] = useState<PaymentRecord | null>(null);
   const [detailsPaymentId, setDetailsPaymentId] = useState<string | null>(null);
+  const [receiptPaymentId, setReceiptPaymentId] = useState<string | null>(null);
   const [isVerifyingId, setIsVerifyingId] = useState<string | null>(null);
 
   const loadData = useCallback(async () => {
@@ -639,6 +641,17 @@ function PaymentsPageContent() {
                       {/* Actions */}
                       <TableCell className="text-right whitespace-nowrap">
                         <div className="flex items-center justify-end gap-1.5">
+                          {/* Official Receipt */}
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => setReceiptPaymentId(payment.id)}
+                            className="h-7 w-7 p-0 text-primary hover:text-primary hover:bg-primary/10"
+                            title="Generate & Send Official Receipt"
+                          >
+                            <Receipt className="h-3.5 w-3.5" />
+                          </Button>
+
                           {/* View details */}
                           <Button
                             variant="ghost"
@@ -702,8 +715,11 @@ function PaymentsPageContent() {
           setPreselectedMemberId(undefined);
           setPreselectedObligationId(undefined);
         }}
-        onSuccess={() => {
+        onSuccess={(createdPaymentId) => {
           loadData();
+          if (createdPaymentId) {
+            setReceiptPaymentId(createdPaymentId);
+          }
         }}
         members={members}
         obligations={obligations}
@@ -724,6 +740,13 @@ function PaymentsPageContent() {
         isOpen={Boolean(detailsPaymentId)}
         onClose={() => setDetailsPaymentId(null)}
         paymentId={detailsPaymentId}
+        onViewReceipt={(id) => setReceiptPaymentId(id)}
+      />
+
+      <ReceiptDialog
+        isOpen={Boolean(receiptPaymentId)}
+        paymentId={receiptPaymentId}
+        onClose={() => setReceiptPaymentId(null)}
       />
     </div>
   );
