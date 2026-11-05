@@ -104,6 +104,7 @@ interface MemberDetailsResponse {
       name: string;
       contributionAmount: number;
       currency: string;
+      memberCount: number;
     };
   };
   financialSummary: {
@@ -556,6 +557,7 @@ export default function MemberDetailsPage() {
           onClose={() => setIsEditOpen(false)}
           onSuccess={fetchDetails}
           occupiedPositions={[]}
+          maxCapacity={member.group.memberCount}
           initialData={{
             id: member.id,
             fullName: member.fullName,

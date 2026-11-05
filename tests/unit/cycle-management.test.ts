@@ -23,18 +23,24 @@ describe("Savings Cycle Management Domain & Constraints (Phase 5)", () => {
       expect(valid.success).toBe(true);
     });
 
-    it("requires exactly 4 due dates", () => {
+    it("validates flexible due dates (at least 2 deadlines, rejects fewer than 2)", () => {
       const tooFew = createCycleSchema.safeParse({
         startDate: baseDate.toISOString(),
-        dueDates: validDueDates.slice(0, 3),
+        dueDates: validDueDates.slice(0, 1),
       });
       expect(tooFew.success).toBe(false);
 
-      const tooMany = createCycleSchema.safeParse({
+      const validThree = createCycleSchema.safeParse({
+        startDate: baseDate.toISOString(),
+        dueDates: validDueDates.slice(0, 3),
+      });
+      expect(validThree.success).toBe(true);
+
+      const validFive = createCycleSchema.safeParse({
         startDate: baseDate.toISOString(),
         dueDates: [...validDueDates, new Date("2025-05-15T23:59:59.000Z").toISOString()],
       });
-      expect(tooMany.success).toBe(false);
+      expect(validFive.success).toBe(true);
     });
 
     it("enforces chronological order of contribution deadlines", () => {

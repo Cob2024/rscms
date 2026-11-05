@@ -14,6 +14,7 @@ interface MemberFormDialogProps {
   onClose: () => void;
   onSuccess: () => void;
   occupiedPositions: number[];
+  maxCapacity?: number;
   initialData?: {
     id: string;
     fullName: string;
@@ -28,12 +29,32 @@ export function MemberFormDialog({
   onClose,
   onSuccess,
   occupiedPositions,
+  maxCapacity = 4,
   initialData,
 }: MemberFormDialogProps) {
   const [error, setError] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const isEditing = Boolean(initialData);
+
+  const effectiveCapacity = Math.max(
+    maxCapacity,
+    initialData?.rotationPosition ?? 0,
+    occupiedPositions.length > 0 ? Math.max(...occupiedPositions) : 0,
+    4
+  );
+
+  const allPossiblePositions = Array.from(
+    { length: effectiveCapacity },
+    (_, i) => i + 1
+  );
+
+  const availablePositions = allPossiblePositions.filter(
+    (p) => !occupiedPositions.includes(p) || (isEditing && p === initialData?.rotationPosition)
+  );
+
+  const defaultPosition =
+    initialData?.rotationPosition ?? (availablePositions[0] ?? 1);
 
   const {
     register,
@@ -53,8 +74,7 @@ export function MemberFormDialog({
           fullName: "",
           phoneNumber: "",
           email: "",
-          rotationPosition:
-            [1, 2, 3, 4].find((p) => !occupiedPositions.includes(p)) || 1,
+          rotationPosition: defaultPosition,
         },
   });
 
@@ -91,10 +111,6 @@ export function MemberFormDialog({
     }
   }
 
-  // Available rotation positions: for edit, include current member's position
-  const availablePositions = [1, 2, 3, 4].filter(
-    (p) => !occupiedPositions.includes(p) || (isEditing && p === initialData?.rotationPosition)
-  );
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-background/80 p-4 backdrop-blur-sm">
@@ -166,7 +182,7 @@ export function MemberFormDialog({
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="rotationPosition">Rotation Position (1 – 4)</Label>
+            <Label htmlFor="rotationPosition">Rotation Position (1 – {effectiveCapacity})</Label>
             <select
               id="rotationPosition"
               disabled={isSubmitting}
@@ -183,7 +199,7 @@ export function MemberFormDialog({
               <p className="text-xs text-destructive">{errors.rotationPosition.message}</p>
             )}
             <p className="text-[11px] text-muted-foreground">
-              Fixed payout sequence order in the 4-month savings cycle.
+              Fixed payout sequence order in the savings cycle.
             </p>
           </div>
 

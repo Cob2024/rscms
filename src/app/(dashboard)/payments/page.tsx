@@ -284,7 +284,7 @@ function PaymentsPageContent() {
                 No Group Members Registered
               </h3>
               <p className="text-xs text-amber-800 dark:text-amber-300 mt-0.5 leading-relaxed">
-                RSCMS manages rotating contributions across 4 participants. You must register members in rotation positions 1 through 4 before payments can be recorded.
+                RSCMS manages rotating contributions across all group participants. You must register members in rotation seats before payments can be recorded.
               </p>
             </div>
           </div>
@@ -511,9 +511,9 @@ function PaymentsPageContent() {
                     <p className="font-semibold text-foreground text-base">No payment records found</p>
                     <p className="text-xs text-muted-foreground mt-1 max-w-sm mx-auto">
                       {members.length === 0
-                        ? "Register 4 group members to begin tracking rotating contributions."
+                        ? "Register group members to begin tracking rotating contributions."
                         : obligations.length === 0
-                        ? "Launch a 4-month savings cycle in Settings to generate period obligations."
+                        ? "Launch a savings cycle in Settings to generate period obligations."
                         : "Record a manual cash, mobile money, or bank payment received from a member."}
                     </p>
                     {members.length === 0 ? (

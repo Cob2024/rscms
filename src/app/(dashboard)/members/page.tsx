@@ -45,8 +45,16 @@ interface MemberRecord {
   totalPayoutsPesewas: number;
 }
 
+interface GroupRecord {
+  id: string;
+  name: string;
+  memberCount: number;
+  contributionAmount: number;
+}
+
 export default function MembersPage() {
   const [members, setMembers] = useState<MemberRecord[]>([]);
+  const [group, setGroup] = useState<GroupRecord | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
@@ -71,6 +79,9 @@ export default function MembersPage() {
         setError(data.error || "Failed to load members.");
       } else {
         setMembers(data.members || []);
+        if (data.group) {
+          setGroup(data.group);
+        }
       }
     } catch {
       setError("Network error while loading group members.");
@@ -84,6 +95,11 @@ export default function MembersPage() {
   }, [fetchMembers]);
 
   // Derived metrics
+  const maxCapacity = group?.memberCount ?? 4;
+  const contributionAmount = group?.contributionAmount ?? 25000;
+  const monthlyTarget = contributionAmount * maxCapacity;
+  const isCapacityReached = members.length >= maxCapacity;
+
   const totalPaid = members.reduce((sum, m) => sum + m.totalPaidPesewas, 0);
   const totalOutstanding = members.reduce((sum, m) => sum + m.outstandingBalancePesewas, 0);
   const activeCount = members.filter((m) => m.status === MemberStatus.ACTIVE).length;
@@ -107,17 +123,37 @@ export default function MembersPage() {
         <div>
           <h1 className="text-3xl font-bold tracking-tight">Members</h1>
           <p className="text-sm text-muted-foreground">
-            Manage the 4 group participants and their fixed rotation seats.
+            Manage the {maxCapacity} group participants and their fixed rotation seats.
           </p>
         </div>
         <Button
           onClick={() => setIsAddOpen(true)}
-          disabled={members.length >= 4}
+          disabled={isCapacityReached}
         >
           <UserPlus className="mr-2 h-4 w-4" />
-          {members.length >= 4 ? "Rotation Full (4/4)" : "Register Member"}
+          {isCapacityReached ? `Capacity Reached (${members.length}/${maxCapacity})` : "Register Member"}
         </Button>
       </div>
+
+      {/* Capacity Alert if full */}
+      {isCapacityReached && (
+        <div className="flex flex-col gap-3 rounded-lg border border-primary/20 bg-primary/5 p-4 sm:flex-row sm:items-center sm:justify-between">
+          <div className="flex items-center gap-3">
+            <Users className="h-5 w-5 shrink-0 text-primary" />
+            <div>
+              <p className="text-sm font-semibold text-foreground">
+                Group capacity reached ({members.length} / {maxCapacity} members)
+              </p>
+              <p className="text-xs text-muted-foreground">
+                Want to add more people to the group? You can easily increase group capacity in Group Settings.
+              </p>
+            </div>
+          </div>
+          <Button variant="outline" size="sm" asChild className="shrink-0">
+            <Link href="/settings">Adjust Capacity in Settings</Link>
+          </Button>
+        </div>
+      )}
 
       {/* KPI Cards */}
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
@@ -127,7 +163,7 @@ export default function MembersPage() {
             <Users className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{members.length} / 4</div>
+            <div className="text-2xl font-bold">{members.length} / {maxCapacity}</div>
             <p className="text-xs text-muted-foreground">
               {activeCount} active participants
             </p>
@@ -166,8 +202,8 @@ export default function MembersPage() {
             <Wallet className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">GH₵1,000.00</div>
-            <p className="text-xs text-muted-foreground">GH₵250 monthly per member</p>
+            <div className="text-2xl font-bold">{formatPesewas(monthlyTarget)}</div>
+            <p className="text-xs text-muted-foreground">{formatPesewas(contributionAmount)} monthly per member</p>
           </CardContent>
         </Card>
       </div>
@@ -236,7 +272,7 @@ export default function MembersPage() {
                     <p className="font-medium">No members found</p>
                     <p className="mt-1 text-xs text-muted-foreground">
                       {members.length === 0
-                        ? "Register group members to establish the 4-month payout rotation."
+                        ? `Register group members to establish the ${maxCapacity}-month payout rotation.`
                         : "No members matched your search criteria."}
                     </p>
                   </TableCell>
@@ -325,6 +361,7 @@ export default function MembersPage() {
         onClose={() => setIsAddOpen(false)}
         onSuccess={fetchMembers}
         occupiedPositions={occupiedPositions}
+        maxCapacity={maxCapacity}
       />
 
       {/* Edit Member Dialog */}
@@ -334,6 +371,7 @@ export default function MembersPage() {
           onClose={() => setEditingMember(null)}
           onSuccess={fetchMembers}
           occupiedPositions={occupiedPositions}
+          maxCapacity={maxCapacity}
           initialData={editingMember}
         />
       )}

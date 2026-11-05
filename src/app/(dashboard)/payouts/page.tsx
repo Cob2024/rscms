@@ -260,7 +260,7 @@ export default function PayoutsPage() {
               {summary.currentRecipient ? (
                 <>Position {summary.currentRecipient.rotationPosition} in fixed rotation</>
               ) : (
-                "All 4 rotation payouts processed"
+                "All rotation payouts processed"
               )}
             </p>
           </CardContent>
@@ -272,14 +272,14 @@ export default function PayoutsPage() {
         <CardContent className="p-4 sm:p-5">
           <div className="mb-3 flex items-center justify-between">
             <h3 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-              4-Month Fixed Rotation Flow
+              {schedules.length}-Month Fixed Rotation Flow
             </h3>
             <span className="text-xs text-muted-foreground">
-              Cycle {cycleNumber || 1} · Monthly GH₵1,000 Target
+              Cycle {cycleNumber || 1} · Monthly {formatPesewas(schedules[0]?.expectedAmount || 100000)} Target
             </span>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-4 gap-3">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3">
             {schedules.map((schedule) => {
               const active = schedule.activePayout;
               const isAcknowledged =

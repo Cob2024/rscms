@@ -203,26 +203,33 @@ export class CycleService {
       );
     }
 
-    // 2. Validate that exactly 4 active members exist with rotation positions 1, 2, 3, 4
+    // 2. Validate that active members match group capacity and are assigned 1..N rotation seats
     const members = await prisma.member.findMany({
       where: { groupId: group.id, status: "ACTIVE" },
       orderBy: { rotationPosition: "asc" },
     });
 
-    if (members.length !== 4) {
+    if (members.length < 2) {
       throw new CycleServiceError(
-        `Group must have exactly 4 active members before starting a cycle. Currently found: ${members.length}.`,
+        `Group must have at least 2 active members to start a savings cycle. Currently found: ${members.length}.`,
+        409
+      );
+    }
+
+    if (members.length !== group.memberCount) {
+      throw new CycleServiceError(
+        `Group capacity is configured for ${group.memberCount} members, but currently has ${members.length} active members. Adjust group capacity in Settings or register all members.`,
         409
       );
     }
 
     const positions = members.map((m) => m.rotationPosition);
-    const validPositions = [1, 2, 3, 4];
+    const validPositions = Array.from({ length: members.length }, (_, i) => i + 1);
     const isOrdered = validPositions.every((pos, index) => positions[index] === pos);
 
     if (!isOrdered) {
       throw new CycleServiceError(
-        "Members must be assigned strictly unique rotation positions from 1 to 4.",
+        `Members must be assigned strictly sequential rotation positions from 1 to ${members.length}.`,
         409
       );
     }
@@ -230,9 +237,17 @@ export class CycleService {
     // 3. Parse dates & deadlines
     const startDate = new Date(input.startDate);
     const dueDates = input.dueDates.map((d) => new Date(d));
+
+    if (dueDates.length !== members.length) {
+      throw new CycleServiceError(
+        `Cycle requires exactly ${members.length} contribution deadlines (1 per period for each member's turn). Provided: ${dueDates.length}.`,
+        400
+      );
+    }
+
     const contributionAmount = input.contributionAmountPesewas || group.contributionAmount;
-    const monthlyTarget = input.monthlyTargetPesewas || group.monthlyTarget;
-    const endDate = addMonths(startDate, 4);
+    const monthlyTarget = input.monthlyTargetPesewas || (contributionAmount * members.length);
+    const endDate = addMonths(startDate, members.length);
 
     return await prisma.$transaction(
       async (tx) => {
@@ -277,8 +292,8 @@ export class CycleService {
           status: PayoutStatus;
         }[] = [];
 
-        // Generate 4 monthly contribution periods
-        for (let i = 0; i < 4; i++) {
+        // Generate N monthly contribution periods
+        for (let i = 0; i < members.length; i++) {
           const periodNumber = i + 1;
           const periodStart = addMonths(startDate, i);
           const dueDate = dueDates[i];
@@ -297,7 +312,7 @@ export class CycleService {
             },
           });
 
-          // Generate 1 obligation per member (4 obligations per period)
+          // Generate 1 obligation per member (N obligations per period)
           for (const member of members) {
             allObligations.push({
               id: randomUUID(),
@@ -311,7 +326,7 @@ export class CycleService {
           }
 
           // Generate fixed Payout Schedule for this period
-          // Period 1 -> Member 1, Period 2 -> Member 2, Period 3 -> Member 3, Period 4 -> Member 4
+          // Period i -> Member i
           const recipientMember = members[i];
           allPayoutSchedules.push({
             id: randomUUID(),
@@ -325,7 +340,7 @@ export class CycleService {
           });
         }
 
-        // Batch insert all 16 obligations in ONE query
+        // Batch insert all obligations in ONE query
         await tx.contributionObligation.createMany({
           data: allObligations,
         });

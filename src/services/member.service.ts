@@ -112,7 +112,7 @@ export class MemberService {
       where: { id },
       include: {
         group: {
-          select: { id: true, name: true, contributionAmount: true, currency: true },
+          select: { id: true, name: true, contributionAmount: true, currency: true, memberCount: true },
         },
         obligations: {
           include: {

@@ -43,7 +43,7 @@ describe("Member Management Domain & Validation (Phase 4)", () => {
       expect(valid.success).toBe(true);
     });
 
-    it("rejects rotation positions outside 1 to 4", () => {
+    it("rejects rotation positions outside 1 to 100 or non-integers", () => {
       const invalidZero = createMemberSchema.safeParse({
         fullName: "Invalid Position",
         phoneNumber: "+233240000001",
@@ -51,12 +51,19 @@ describe("Member Management Domain & Validation (Phase 4)", () => {
       });
       expect(invalidZero.success).toBe(false);
 
-      const invalidFive = createMemberSchema.safeParse({
+      const invalidAboveMax = createMemberSchema.safeParse({
         fullName: "Invalid Position",
+        phoneNumber: "+233240000001",
+        rotationPosition: 101,
+      });
+      expect(invalidAboveMax.success).toBe(false);
+
+      const validFive = createMemberSchema.safeParse({
+        fullName: "Valid Fifth Member",
         phoneNumber: "+233240000001",
         rotationPosition: 5,
       });
-      expect(invalidFive.success).toBe(false);
+      expect(validFive.success).toBe(true);
 
       const invalidDecimal = createMemberSchema.safeParse({
         fullName: "Invalid Position",

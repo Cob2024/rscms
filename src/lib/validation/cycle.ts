@@ -1,7 +1,7 @@
 import { z } from "zod";
 
 export const periodConfigSchema = z.object({
-  periodNumber: z.number().int().min(1).max(4),
+  periodNumber: z.number().int().min(1).max(100),
   startDate: z.string().datetime({ message: "Period start date must be a valid ISO datetime" }),
   dueDate: z.string().datetime({ message: "Contribution deadline must be a valid ISO datetime" }),
   closeDate: z.string().datetime({ message: "Period close date must be a valid ISO datetime" }),
@@ -20,10 +20,11 @@ export const createCycleSchema = z
       .number()
       .int()
       .positive("Monthly target must be a positive integer in pesewas")
-      .default(100000), // Default: GH₵1,000 in pesewas
+      .optional(),
     dueDates: z
       .array(z.string().datetime({ message: "Each deadline must be a valid ISO datetime" }))
-      .length(4, "Exactly 4 contribution deadlines must be configured"),
+      .min(2, "At least 2 contribution deadlines must be configured")
+      .max(100, "Cannot configure more than 100 contribution deadlines"),
   })
   .refine(
     (data) => {
@@ -37,7 +38,7 @@ export const createCycleSchema = z
       return true;
     },
     {
-      message: "Contribution deadlines must follow chronological order (Period 1 < Period 2 < Period 3 < Period 4)",
+      message: "Contribution deadlines must follow chronological order (Period 1 < Period 2 < ...)",
       path: ["dueDates"],
     }
   );

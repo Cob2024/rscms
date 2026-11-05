@@ -135,7 +135,7 @@ export default function ContributionsPage() {
             <Calendar className="h-12 w-12 text-muted-foreground" />
             <h3 className="mt-4 text-lg font-semibold">No Active Savings Cycle</h3>
             <p className="mt-1 max-w-sm text-sm text-muted-foreground">
-              Add four members and start a savings cycle to automatically generate monthly contribution obligations.
+              Add members and start a savings cycle to automatically generate monthly contribution obligations.
             </p>
             <Button asChild className="mt-6">
               <Link href="/members">Go to Members</Link>
@@ -165,7 +165,7 @@ export default function ContributionsPage() {
             </span>
           </div>
           <p className="text-sm text-muted-foreground">
-            Monthly contribution obligations for the 4 group participants.
+            Monthly contribution obligations for the {periods.length} group participants.
           </p>
         </div>
 
@@ -213,7 +213,7 @@ export default function ContributionsPage() {
                 {formatPesewas(summary.totalExpectedPesewas)}
               </div>
               <p className="text-xs text-muted-foreground">
-                GH₵1,000 × 4 months in Cycle {cycle.cycleNumber}
+                {formatPesewas(cycle.monthlyTarget)} × {periods.length} months in Cycle {cycle.cycleNumber}
               </p>
             </CardContent>
           </Card>

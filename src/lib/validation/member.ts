@@ -29,8 +29,8 @@ export const createMemberSchema = z.object({
   rotationPosition: z
     .number({ invalid_type_error: "Rotation position must be a number" })
     .int("Rotation position must be an integer")
-    .min(1, "Rotation position must be between 1 and 4")
-    .max(4, "Rotation position must be between 1 and 4"),
+    .min(1, "Rotation position must be at least 1")
+    .max(100, "Rotation position cannot exceed 100"),
 });
 
 export const updateMemberSchema = z.object({
@@ -60,8 +60,8 @@ export const updateMemberSchema = z.object({
   rotationPosition: z
     .number()
     .int()
-    .min(1, "Rotation position must be between 1 and 4")
-    .max(4, "Rotation position must be between 1 and 4")
+    .min(1, "Rotation position must be at least 1")
+    .max(100, "Rotation position cannot exceed 100")
     .optional(),
 });
 
