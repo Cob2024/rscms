@@ -18,7 +18,14 @@ export default function SettingsPage() {
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState("");
   const [notice, setNotice] = useState("");
-  const authHeaders = useCallback(async () => { const { data: { session } }=await supabaseBrowser.auth.getSession(); return { Authorization: `Bearer ${session?.access_token??""}` }; }, []);
+  const authHeaders = useCallback(async () => {
+    const { data: { session } } = await supabaseBrowser.auth.getSession().catch(() => ({ data: { session: null } }));
+    const headers: Record<string, string> = {};
+    if (session?.access_token) {
+      headers["Authorization"] = `Bearer ${session.access_token}`;
+    }
+    return headers;
+  }, []);
   const load=useCallback(async()=>{setLoading(true);const response=await fetch("/api/group",{headers:await authHeaders()});const body=await response.json();if(response.ok)setGroup(body.group);else setError(body.error??"Could not load group settings.");setLoading(false);},[authHeaders]);
   useEffect(()=>{void load();},[load]);
 

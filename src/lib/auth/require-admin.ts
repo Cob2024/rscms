@@ -17,9 +17,19 @@ export interface AuthenticatedAdmin {
  * Validates the token with Supabase and guarantees an active admin_users record exists.
  */
 export async function requireAdmin(request: NextRequest): Promise<AuthenticatedAdmin | null> {
+  const authHeader = request.headers.get("authorization");
+  let bearerToken: string | null = null;
+  if (authHeader) {
+    const trimmed = authHeader.replace(/^Bearer\s*/i, "").trim();
+    if (trimmed && trimmed !== "undefined" && trimmed !== "null") {
+      bearerToken = trimmed;
+    }
+  }
+
   const token =
-    request.headers.get("authorization")?.replace(/^Bearer\s+/i, "") ||
-    request.cookies.get(SESSION_COOKIE)?.value;
+    bearerToken ||
+    request.cookies.get(SESSION_COOKIE)?.value ||
+    null;
 
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
   const anonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;

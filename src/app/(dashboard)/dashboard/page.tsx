@@ -22,8 +22,12 @@ export default function DashboardPage() {
   const [data, setData] = useState<DashboardData | null>(null);
   const [error, setError] = useState("");
   const load = useCallback(async () => {
-    const { data: { session } } = await supabaseBrowser.auth.getSession();
-    const response = await fetch("/api/dashboard", { headers: { Authorization: `Bearer ${session?.access_token ?? ""}` } });
+    const { data: { session } } = await supabaseBrowser.auth.getSession().catch(() => ({ data: { session: null } }));
+    const headers: Record<string, string> = {};
+    if (session?.access_token) {
+      headers["Authorization"] = `Bearer ${session.access_token}`;
+    }
+    const response = await fetch("/api/dashboard", { headers });
     const body = await response.json();
     if (response.ok) setData(body); else setError(body.error ?? "Could not load dashboard.");
   }, []);

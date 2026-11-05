@@ -10,6 +10,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Loader2, AlertCircle } from "lucide-react";
+import { supabaseBrowser } from "@/lib/auth/supabase-browser";
 
 const loginSchema = z.object({
   email: z.string().email("Please enter a valid email address"),
@@ -48,6 +49,16 @@ export function LoginForm() {
       if (!response.ok) {
         setError(result.error || "Login failed. Please check your credentials.");
         return;
+      }
+
+      // Also sync client session in Supabase Browser instance
+      try {
+        await supabaseBrowser.auth.signInWithPassword({
+          email: data.email,
+          password: data.password,
+        });
+      } catch (clientAuthErr) {
+        console.warn("Client Supabase session sync warning:", clientAuthErr);
       }
 
       const returnUrl = searchParams.get("from") || "/dashboard";

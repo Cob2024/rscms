@@ -20,9 +20,19 @@ export async function middleware(request: NextRequest) {
     return NextResponse.next();
   }
 
+  const authHeader = request.headers.get("authorization");
+  let bearerToken: string | null = null;
+  if (authHeader) {
+    const trimmed = authHeader.replace(/^Bearer\s*/i, "").trim();
+    if (trimmed && trimmed !== "undefined" && trimmed !== "null") {
+      bearerToken = trimmed;
+    }
+  }
+
   const token =
     request.cookies.get(SESSION_COOKIE)?.value ||
-    request.headers.get("authorization")?.replace(/^Bearer\s+/i, "");
+    bearerToken ||
+    null;
 
   // Root redirect
   if (pathname === "/") {
