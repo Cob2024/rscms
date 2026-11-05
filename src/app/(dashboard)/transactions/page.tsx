@@ -176,13 +176,13 @@ export default function TransactionsPage() {
       )}
 
       {/* Navigation Tabs */}
-      <div className="flex border-b border-border space-x-1 sm:space-x-2 overflow-x-auto pb-px">
+      <div className="flex border-b border-[#E2E8F0] space-x-1 sm:space-x-2 overflow-x-auto pb-px">
         <button
           onClick={() => setActiveTab("journal")}
-          className={`flex items-center gap-2 px-4 py-2.5 text-sm font-medium border-b-2 transition-colors whitespace-nowrap ${
+          className={`flex items-center gap-2 px-4 py-2.5 text-sm font-semibold border-b-2 transition-colors whitespace-nowrap ${
             activeTab === "journal"
-              ? "border-primary text-primary"
-              : "border-transparent text-muted-foreground hover:text-foreground"
+              ? "border-[#087F5B] text-[#087F5B]"
+              : "border-transparent text-[#64748B] hover:text-[#102A43]"
           }`}
         >
           <BookOpenCheck className="h-4 w-4" />
@@ -191,32 +191,33 @@ export default function TransactionsPage() {
 
         <button
           onClick={() => setActiveTab("trial-balance")}
-          className={`flex items-center gap-2 px-4 py-2.5 text-sm font-medium border-b-2 transition-colors whitespace-nowrap ${
+          className={`flex items-center gap-2 px-4 py-2.5 text-sm font-semibold border-b-2 transition-colors whitespace-nowrap ${
             activeTab === "trial-balance"
-              ? "border-primary text-primary"
-              : "border-transparent text-muted-foreground hover:text-foreground"
+              ? "border-[#087F5B] text-[#087F5B]"
+              : "border-transparent text-[#64748B] hover:text-[#102A43]"
           }`}
         >
           <Scale className="h-4 w-4" />
           Trial Balance
           {trialBalance && (
-            <Badge
-              variant={trialBalance.isBalanced ? "default" : "destructive"}
-              className={`ml-1 text-[10px] px-1.5 py-0 ${
-                trialBalance.isBalanced ? "bg-emerald-600 hover:bg-emerald-600" : ""
+            <span
+              className={`ml-1 text-[10px] font-bold px-2 py-0.5 rounded-full border ${
+                trialBalance.isBalanced
+                  ? "bg-[#E6F4EF] text-[#066849] border-[#A3E0CE]"
+                  : "bg-[#FEECEB] text-[#991B1B] border-[#FECACA]"
               }`}
             >
               {trialBalance.isBalanced ? "Balanced" : "Discrepancy"}
-            </Badge>
+            </span>
           )}
         </button>
 
         <button
           onClick={() => setActiveTab("chart-of-accounts")}
-          className={`flex items-center gap-2 px-4 py-2.5 text-sm font-medium border-b-2 transition-colors whitespace-nowrap ${
+          className={`flex items-center gap-2 px-4 py-2.5 text-sm font-semibold border-b-2 transition-colors whitespace-nowrap ${
             activeTab === "chart-of-accounts"
-              ? "border-primary text-primary"
-              : "border-transparent text-muted-foreground hover:text-foreground"
+              ? "border-[#087F5B] text-[#087F5B]"
+              : "border-transparent text-[#64748B] hover:text-[#102A43]"
           }`}
         >
           <Wallet className="h-4 w-4" />
@@ -225,10 +226,10 @@ export default function TransactionsPage() {
 
         <button
           onClick={() => setActiveTab("cash-book")}
-          className={`flex items-center gap-2 px-4 py-2.5 text-sm font-medium border-b-2 transition-colors whitespace-nowrap ${
+          className={`flex items-center gap-2 px-4 py-2.5 text-sm font-semibold border-b-2 transition-colors whitespace-nowrap ${
             activeTab === "cash-book"
-              ? "border-primary text-primary"
-              : "border-transparent text-muted-foreground hover:text-foreground"
+              ? "border-[#087F5B] text-[#087F5B]"
+              : "border-transparent text-[#64748B] hover:text-[#102A43]"
           }`}
         >
           <History className="h-4 w-4" />
@@ -362,12 +363,12 @@ export default function TransactionsPage() {
                         </TableCell>
                         <TableCell className="text-center">
                           {tx.isBalanced ? (
-                            <span className="inline-flex items-center gap-1 text-[11px] font-medium text-emerald-600 bg-emerald-50 dark:bg-emerald-950/40 px-1.5 py-0.5 rounded border border-emerald-200 dark:border-emerald-900">
+                            <span className="inline-flex items-center gap-1 text-[11px] font-bold text-[#066849] bg-[#E6F4EF] px-2 py-0.5 rounded-full border border-[#A3E0CE]">
                               <CheckCircle2 className="h-3 w-3" />
                               OK
                             </span>
                           ) : (
-                            <span className="inline-flex items-center gap-1 text-[11px] font-medium text-destructive bg-destructive/10 px-1.5 py-0.5 rounded border border-destructive/20">
+                            <span className="inline-flex items-center gap-1 text-[11px] font-bold text-[#991B1B] bg-[#FEECEB] px-2 py-0.5 rounded-full border border-[#FECACA]">
                               <AlertTriangle className="h-3 w-3" />
                               Diff
                             </span>

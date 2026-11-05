@@ -41,6 +41,7 @@ import { ManualPaymentDialog } from "@/components/payments/manual-payment-dialog
 import { ReversePaymentDialog } from "@/components/payments/reverse-payment-dialog";
 import { PaymentDetailsDialog } from "@/components/payments/payment-details-dialog";
 import { ReceiptDialog } from "@/components/payments/receipt-dialog";
+import { StatusBadge } from "@/components/ui/status-badge";
 
 interface Member {
   id: string;
@@ -335,69 +336,69 @@ function PaymentsPageContent() {
 
       {/* KPI Cards */}
       <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
-        <Card>
+        <Card className="border border-[#E2E8F0] bg-white shadow-xs">
           <CardContent className="p-4 sm:p-5">
             <div className="flex items-center justify-between">
-              <span className="text-xs font-medium text-muted-foreground">
+              <span className="text-xs font-semibold uppercase tracking-wider text-[#64748B]">
                 Verified Contributions
               </span>
-              <ShieldCheck className="h-4 w-4 text-emerald-600" />
+              <ShieldCheck className="h-4 w-4 text-[#087F5B]" />
             </div>
-            <div className="mt-2 text-xl sm:text-2xl font-bold tracking-tight text-emerald-600 font-mono">
+            <div className="mt-2 text-xl sm:text-2xl font-bold tracking-tight text-[#087F5B] font-mono">
               {formatPesewas(stats.totalVerifiedPesewas)}
             </div>
-            <p className="mt-1 text-[11px] text-muted-foreground">
+            <p className="mt-1 text-[11px] text-[#64748B]">
               Posted to general ledger (1010/4010)
             </p>
           </CardContent>
         </Card>
 
-        <Card>
+        <Card className="border border-[#E2E8F0] bg-white shadow-xs">
           <CardContent className="p-4 sm:p-5">
             <div className="flex items-center justify-between">
-              <span className="text-xs font-medium text-muted-foreground">
+              <span className="text-xs font-semibold uppercase tracking-wider text-[#64748B]">
                 Pending Verification
               </span>
-              <Clock className="h-4 w-4 text-amber-500" />
+              <Clock className="h-4 w-4 text-[#B45309]" />
             </div>
-            <div className="mt-2 text-xl sm:text-2xl font-bold tracking-tight text-amber-600 font-mono">
+            <div className="mt-2 text-xl sm:text-2xl font-bold tracking-tight text-[#B45309] font-mono">
               {formatPesewas(stats.totalPendingPesewas)}
             </div>
-            <p className="mt-1 text-[11px] text-muted-foreground">
+            <p className="mt-1 text-[11px] text-[#64748B]">
               Requires administrative confirmation
             </p>
           </CardContent>
         </Card>
 
-        <Card>
+        <Card className="border border-[#E2E8F0] bg-white shadow-xs">
           <CardContent className="p-4 sm:p-5">
             <div className="flex items-center justify-between">
-              <span className="text-xs font-medium text-muted-foreground">
+              <span className="text-xs font-semibold uppercase tracking-wider text-[#64748B]">
                 Reversed Amount
               </span>
-              <RotateCcw className="h-4 w-4 text-destructive" />
+              <RotateCcw className="h-4 w-4 text-[#B42318]" />
             </div>
-            <div className="mt-2 text-xl sm:text-2xl font-bold tracking-tight text-destructive font-mono">
+            <div className="mt-2 text-xl sm:text-2xl font-bold tracking-tight text-[#B42318] font-mono">
               {formatPesewas(stats.totalReversedPesewas)}
             </div>
-            <p className="mt-1 text-[11px] text-muted-foreground">
+            <p className="mt-1 text-[11px] text-[#64748B]">
               Rolled back with audit reason
             </p>
           </CardContent>
         </Card>
 
-        <Card>
+        <Card className="border border-[#E2E8F0] bg-white shadow-xs">
           <CardContent className="p-4 sm:p-5">
             <div className="flex items-center justify-between">
-              <span className="text-xs font-medium text-muted-foreground">
+              <span className="text-xs font-semibold uppercase tracking-wider text-[#64748B]">
                 Total Receipts
               </span>
-              <Receipt className="h-4 w-4 text-primary" />
+              <Receipt className="h-4 w-4 text-[#102A43]" />
             </div>
-            <div className="mt-2 text-xl sm:text-2xl font-bold tracking-tight font-mono">
+            <div className="mt-2 text-xl sm:text-2xl font-bold tracking-tight text-[#102A43] font-mono">
               {stats.totalReceiptsCount}
             </div>
-            <p className="mt-1 text-[11px] text-muted-foreground">
+            <p className="mt-1 text-[11px] text-[#64748B]">
               Unique recorded payment entries
             </p>
           </CardContent>
@@ -562,14 +563,14 @@ function PaymentsPageContent() {
                       {/* Member */}
                       <TableCell>
                         <div className="flex items-center gap-2">
-                          <span className="flex h-6 w-6 items-center justify-center rounded-full bg-primary/10 text-primary font-bold text-[11px]">
+                          <span className="flex h-6 w-6 items-center justify-center rounded-full bg-[#E6F4EF] text-[#066849] border border-[#A3E0CE] font-bold text-[11px]">
                             {payment.member.rotationPosition}
                           </span>
                           <div>
-                            <span className="font-semibold text-foreground block">
+                            <span className="font-semibold text-[#102A43] block">
                               {payment.member.fullName}
                             </span>
-                            <span className="text-[11px] text-muted-foreground">
+                            <span className="text-[11px] text-[#64748B]">
                               {payment.member.phoneNumber}
                             </span>
                           </div>
@@ -578,19 +579,19 @@ function PaymentsPageContent() {
 
                       {/* Channel */}
                       <TableCell>
-                        <div className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded border bg-muted/30 text-foreground font-medium text-[11px]">
-                          <ChannelIcon className="h-3 w-3 text-muted-foreground" />
+                        <div className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded border border-[#E2E8F0] bg-[#F8FAFC] text-[#102A43] font-medium text-[11px]">
+                          <ChannelIcon className="h-3 w-3 text-[#64748B]" />
                           <span>{channelInfo.label}</span>
                         </div>
                       </TableCell>
 
                       {/* Reference */}
                       <TableCell>
-                        <span className="font-mono font-medium text-foreground">
+                        <span className="font-mono font-medium text-[#102A43]">
                           {payment.reference || "—"}
                         </span>
                         {payment.notes && (
-                          <span className="block text-[10px] text-muted-foreground truncate max-w-[150px]">
+                          <span className="block text-[10px] text-[#64748B] truncate max-w-[150px]">
                             {payment.notes}
                           </span>
                         )}
@@ -599,43 +600,26 @@ function PaymentsPageContent() {
                       {/* Target Period */}
                       <TableCell>
                         {payment.period ? (
-                          <Badge variant="outline" className="font-normal text-[11px]">
+                          <Badge variant="outline" className="font-normal text-[11px] border-[#CBD5E1] text-[#102A43]">
                             Period {payment.period.periodNumber}
                           </Badge>
                         ) : payment.allocations?.[0] ? (
-                          <Badge variant="outline" className="font-normal text-[11px]">
+                          <Badge variant="outline" className="font-normal text-[11px] border-[#CBD5E1] text-[#102A43]">
                             Period {payment.allocations[0].obligation.period.periodNumber}
                           </Badge>
                         ) : (
-                          <span className="text-muted-foreground">—</span>
+                          <span className="text-[#64748B]">—</span>
                         )}
                       </TableCell>
 
                       {/* Amount */}
-                      <TableCell className="text-right font-mono font-bold text-foreground text-sm tabular-nums">
+                      <TableCell className="text-right font-mono font-bold text-[#102A43] text-sm tabular-nums">
                         {formatPesewas(payment.amount)}
                       </TableCell>
 
                       {/* Status */}
                       <TableCell className="text-center">
-                        {isVerified && (
-                          <span className="inline-flex items-center gap-1 rounded-full bg-emerald-100 px-2 py-0.5 text-[10px] font-semibold text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300">
-                            <CheckCircle2 className="h-3 w-3" />
-                            VERIFIED
-                          </span>
-                        )}
-                        {isPending && (
-                          <span className="inline-flex items-center gap-1 rounded-full bg-amber-100 px-2 py-0.5 text-[10px] font-semibold text-amber-800 dark:bg-amber-950 dark:text-amber-300">
-                            <Clock className="h-3 w-3" />
-                            PENDING
-                          </span>
-                        )}
-                        {isReversed && (
-                          <span className="inline-flex items-center gap-1 rounded-full bg-rose-100 px-2 py-0.5 text-[10px] font-semibold text-rose-800 dark:bg-rose-950 dark:text-rose-300">
-                            <RotateCcw className="h-3 w-3" />
-                            REVERSED
-                          </span>
-                        )}
+                        <StatusBadge status={payment.status} size="sm" />
                       </TableCell>
 
                       {/* Actions */}

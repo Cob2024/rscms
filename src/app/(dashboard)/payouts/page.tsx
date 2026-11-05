@@ -33,6 +33,7 @@ import { DisbursePayoutDialog } from "@/components/payouts/disburse-payout-dialo
 import { AcknowledgePayoutDialog } from "@/components/payouts/acknowledge-payout-dialog";
 import { PostponePayoutDialog } from "@/components/payouts/postpone-payout-dialog";
 import { PayoutDetailsDialog } from "@/components/payouts/payout-details-dialog";
+import { StatusBadge } from "@/components/ui/status-badge";
 
 interface ScheduleItem {
   id: string;
@@ -385,79 +386,66 @@ export default function PayoutsPage() {
                     (isDisbursedOrPartial && activePayout?.acknowledgedAt !== null);
 
                   return (
-                    <TableRow key={schedule.id} className="hover:bg-muted/40 text-xs">
+                    <TableRow key={schedule.id} className="hover:bg-slate-50/70 text-xs">
                       {/* Position */}
                       <TableCell className="font-bold">
-                        <span className="flex h-6 w-6 items-center justify-center rounded-full bg-primary/10 text-primary">
+                        <span className="flex h-6 w-6 items-center justify-center rounded-full bg-[#E6F4EF] text-[#066849] border border-[#A3E0CE] font-bold text-[11px]">
                           {schedule.rotationPosition}
                         </span>
                       </TableCell>
 
                       {/* Recipient */}
                       <TableCell>
-                        <span className="font-semibold text-foreground block">
+                        <span className="font-semibold text-[#102A43] block">
                           {schedule.member.fullName}
                         </span>
-                        <span className="text-[11px] text-muted-foreground">
+                        <span className="text-[11px] text-[#64748B]">
                           {schedule.member.phoneNumber}
                         </span>
                       </TableCell>
 
                       {/* Period */}
                       <TableCell>
-                        <Badge variant="outline" className="text-[11px]">
+                        <Badge variant="outline" className="text-[11px] border-[#CBD5E1] text-[#102A43]">
                           Period {schedule.period.periodNumber}
                         </Badge>
                       </TableCell>
 
                       {/* Date */}
-                      <TableCell className="text-muted-foreground whitespace-nowrap">
+                      <TableCell className="text-[#475569] whitespace-nowrap">
                         {formatDate(new Date(schedule.scheduledDate))}
                       </TableCell>
 
                       {/* Expected Amount */}
-                      <TableCell className="text-right font-mono font-bold text-foreground tabular-nums">
+                      <TableCell className="text-right font-mono font-bold text-[#102A43] tabular-nums">
                         {formatPesewas(schedule.expectedAmount)}
                       </TableCell>
 
                       {/* Shortfall */}
                       <TableCell className="text-right tabular-nums">
                         {schedule.periodShortfall > 0 ? (
-                          <span className="text-amber-600 font-semibold font-mono">
+                          <span className="text-[#B45309] font-bold font-mono">
                             {formatPesewas(schedule.periodShortfall)}
                           </span>
                         ) : (
-                          <span className="text-emerald-600 font-medium">None (0)</span>
+                          <span className="text-[#087F5B] font-semibold">None (0)</span>
                         )}
                       </TableCell>
 
                       {/* Status */}
                       <TableCell className="text-center">
-                        {isAcknowledged ? (
-                          <span className="inline-flex items-center gap-1 rounded-full bg-emerald-100 px-2 py-0.5 text-[10px] font-semibold text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300">
-                            <CheckCheck className="h-3 w-3" />
-                            ACKNOWLEDGED
-                          </span>
-                        ) : isDisbursedOrPartial ? (
-                          <span className="inline-flex items-center gap-1 rounded-full bg-blue-100 px-2 py-0.5 text-[10px] font-semibold text-blue-800 dark:bg-blue-950 dark:text-blue-300">
-                            <ArrowDownToLine className="h-3 w-3" />
-                            {activePayout.status}
-                          </span>
-                        ) : isAuthorized ? (
-                          <span className="inline-flex items-center gap-1 rounded-full bg-amber-100 px-2 py-0.5 text-[10px] font-semibold text-amber-800 dark:bg-amber-950 dark:text-amber-300">
-                            <ShieldCheck className="h-3 w-3" />
-                            AUTHORIZED
-                          </span>
-                        ) : schedule.status === "POSTPONED" ? (
-                          <span className="inline-flex items-center gap-1 rounded-full bg-rose-100 px-2 py-0.5 text-[10px] font-semibold text-rose-800 dark:bg-rose-950 dark:text-rose-300">
-                            <Clock className="h-3 w-3" />
-                            POSTPONED
-                          </span>
-                        ) : (
-                          <span className="inline-flex items-center gap-1 rounded-full bg-muted px-2 py-0.5 text-[10px] font-medium text-muted-foreground">
-                            SCHEDULED
-                          </span>
-                        )}
+                        <StatusBadge
+                          status={
+                            isAcknowledged
+                              ? "ACKNOWLEDGED"
+                              : isDisbursedOrPartial
+                              ? activePayout.status
+                              : isAuthorized
+                              ? "AUTHORIZED"
+                              : schedule.status
+                          }
+                          size="sm"
+                        />
                       </TableCell>
 
                       {/* Actions */}

@@ -256,7 +256,7 @@ export default function SettingsPage() {
       {error && (
         <div
           role="alert"
-          className="rounded-md border border-destructive/40 bg-destructive/5 px-4 py-3 text-sm text-destructive"
+          className="rounded-md border border-[#FECACA] bg-[#FEECEB] px-4 py-3 text-sm font-semibold text-[#991B1B]"
         >
           {error}
         </div>
@@ -265,7 +265,7 @@ export default function SettingsPage() {
       {notice && (
         <div
           role="status"
-          className="rounded-md border border-emerald-700/30 bg-emerald-50 px-4 py-3 text-sm text-emerald-800"
+          className="rounded-md border border-[#A3E0CE] bg-[#E6F4EF] px-4 py-3 text-sm font-semibold text-[#066849]"
         >
           {notice}
         </div>

@@ -56,38 +56,37 @@ export function TrialBalanceCard({
       <div
         className={`rounded-lg border p-4 transition-colors ${
           isBalanced
-            ? "border-emerald-200 bg-emerald-50/70 text-emerald-950 dark:border-emerald-900/50 dark:bg-emerald-950/20 dark:text-emerald-200"
-            : "border-red-200 bg-red-50/70 text-red-950 dark:border-red-900/50 dark:bg-red-950/20 dark:text-red-200"
+            ? "border-[#A3E0CE] bg-[#E6F4EF] text-[#102A43]"
+            : "border-[#FECACA] bg-[#FEECEB] text-[#991B1B]"
         }`}
       >
         <div className="flex items-start justify-between gap-4">
           <div className="flex items-start gap-3">
             {isBalanced ? (
-              <div className="rounded-full bg-emerald-100 p-2 text-emerald-700 dark:bg-emerald-900/50 dark:text-emerald-300">
+              <div className="rounded-full bg-[#087F5B] p-2 text-white shadow-xs">
                 <ShieldCheck className="h-6 w-6" />
               </div>
             ) : (
-              <div className="rounded-full bg-red-100 p-2 text-red-700 dark:bg-red-900/50 dark:text-red-300">
+              <div className="rounded-full bg-[#B42318] p-2 text-white shadow-xs">
                 <AlertTriangle className="h-6 w-6" />
               </div>
             )}
             <div>
               <div className="flex items-center gap-2">
-                <h3 className="text-base font-semibold">
+                <h3 className="text-base font-bold text-[#102A43]">
                   {isBalanced
                     ? "Ledger In Perfect Balance"
                     : "Trial Balance Imbalance Detected"}
                 </h3>
-                <Badge
-                  variant={isBalanced ? "default" : "destructive"}
-                  className={
+                <span
+                  className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-bold border ${
                     isBalanced
-                      ? "bg-emerald-600 hover:bg-emerald-600 text-white"
-                      : ""
-                  }
+                      ? "bg-[#E6F4EF] text-[#066849] border-[#A3E0CE]"
+                      : "bg-[#FEECEB] text-[#991B1B] border-[#FECACA]"
+                  }`}
                 >
                   {isBalanced ? "Balanced (0.00 Diff)" : "Imbalance"}
-                </Badge>
+                </span>
               </div>
               <p className="mt-1 text-sm opacity-90">
                 {isBalanced

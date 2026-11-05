@@ -137,19 +137,19 @@ export default function MembersPage() {
 
       {/* Capacity Alert if full */}
       {isCapacityReached && (
-        <div className="flex flex-col gap-3 rounded-lg border border-primary/20 bg-primary/5 p-4 sm:flex-row sm:items-center sm:justify-between">
+        <div className="flex flex-col gap-3 rounded-lg border border-[#A3E0CE] bg-[#E6F4EF] p-4 sm:flex-row sm:items-center sm:justify-between shadow-xs">
           <div className="flex items-center gap-3">
-            <Users className="h-5 w-5 shrink-0 text-primary" />
+            <Users className="h-5 w-5 shrink-0 text-[#087F5B]" />
             <div>
-              <p className="text-sm font-semibold text-foreground">
+              <p className="text-sm font-semibold text-[#102A43]">
                 Group capacity reached ({members.length} / {maxCapacity} members)
               </p>
-              <p className="text-xs text-muted-foreground">
+              <p className="text-xs text-[#475569]">
                 Want to add more people to the group? You can easily increase group capacity in Group Settings.
               </p>
             </div>
           </div>
-          <Button variant="outline" size="sm" asChild className="shrink-0">
+          <Button variant="outline" size="sm" asChild className="shrink-0 border-[#CBD5E1] bg-white text-[#102A43] hover:bg-slate-50 shadow-xs">
             <Link href="/settings">Adjust Capacity in Settings</Link>
           </Button>
         </div>
@@ -157,53 +157,53 @@ export default function MembersPage() {
 
       {/* KPI Cards */}
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-        <Card>
+        <Card className="border border-[#E2E8F0] bg-white shadow-xs">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Rotation Seats</CardTitle>
-            <Users className="h-4 w-4 text-muted-foreground" />
+            <CardTitle className="text-xs font-semibold uppercase tracking-wider text-[#64748B]">Rotation Seats</CardTitle>
+            <Users className="h-4 w-4 text-[#64748B]" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{members.length} / {maxCapacity}</div>
-            <p className="text-xs text-muted-foreground">
+            <div className="text-2xl font-bold font-mono text-[#102A43]">{members.length} / {maxCapacity}</div>
+            <p className="mt-1 text-xs text-[#64748B]">
               {activeCount} active participants
             </p>
           </CardContent>
         </Card>
 
-        <Card>
+        <Card className="border border-[#E2E8F0] bg-white shadow-xs">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Verified Paid</CardTitle>
-            <Wallet className="h-4 w-4 text-emerald-600" />
+            <CardTitle className="text-xs font-semibold uppercase tracking-wider text-[#64748B]">Verified Paid</CardTitle>
+            <Wallet className="h-4 w-4 text-[#087F5B]" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-emerald-600">
+            <div className="text-2xl font-bold font-mono text-[#087F5B]">
               {formatPesewas(totalPaid)}
             </div>
-            <p className="text-xs text-muted-foreground">From verified payments</p>
+            <p className="mt-1 text-xs text-[#64748B]">From verified payments</p>
           </CardContent>
         </Card>
 
-        <Card>
+        <Card className="border border-[#E2E8F0] bg-white shadow-xs">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Outstanding Balance</CardTitle>
-            <ArrowUpDown className="h-4 w-4 text-amber-600" />
+            <CardTitle className="text-xs font-semibold uppercase tracking-wider text-[#64748B]">Outstanding Balance</CardTitle>
+            <ArrowUpDown className="h-4 w-4 text-[#B45309]" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-amber-600">
+            <div className="text-2xl font-bold font-mono text-[#B45309]">
               {formatPesewas(totalOutstanding)}
             </div>
-            <p className="text-xs text-muted-foreground">Unpaid member obligations</p>
+            <p className="mt-1 text-xs text-[#64748B]">Unpaid member obligations</p>
           </CardContent>
         </Card>
 
-        <Card>
+        <Card className="border border-[#E2E8F0] bg-white shadow-xs">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Group Target</CardTitle>
-            <Wallet className="h-4 w-4 text-muted-foreground" />
+            <CardTitle className="text-xs font-semibold uppercase tracking-wider text-[#64748B]">Group Target</CardTitle>
+            <Wallet className="h-4 w-4 text-[#102A43]" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{formatPesewas(monthlyTarget)}</div>
-            <p className="text-xs text-muted-foreground">{formatPesewas(contributionAmount)} monthly per member</p>
+            <div className="text-2xl font-bold font-mono text-[#102A43]">{formatPesewas(monthlyTarget)}</div>
+            <p className="mt-1 text-xs text-[#64748B]">{formatPesewas(contributionAmount)} monthly per member</p>
           </CardContent>
         </Card>
       </div>
@@ -279,33 +279,33 @@ export default function MembersPage() {
                 </TableRow>
               ) : (
                 filteredMembers.map((member) => (
-                  <TableRow key={member.id}>
+                  <TableRow key={member.id} className="hover:bg-slate-50/70">
                     <TableCell className="text-center font-semibold">
-                      <span className="inline-flex h-7 w-7 items-center justify-center rounded-full bg-primary/10 text-xs font-bold text-primary">
+                      <span className="inline-flex h-7 w-7 items-center justify-center rounded-full bg-[#E6F4EF] text-xs font-bold text-[#066849] border border-[#A3E0CE]">
                         {member.rotationPosition}
                       </span>
                     </TableCell>
                     <TableCell>
                       <Link
                         href={`/members/${member.id}`}
-                        className="font-medium hover:text-primary hover:underline"
+                        className="font-semibold text-[#102A43] hover:text-[#087F5B] hover:underline"
                       >
                         {member.fullName}
                       </Link>
-                      <div className="text-xs text-muted-foreground">
+                      <div className="text-xs text-[#64748B]">
                         {member.email || "No email"}
                       </div>
                     </TableCell>
-                    <TableCell className="text-sm font-mono">
+                    <TableCell className="text-sm font-mono text-[#475569]">
                       {member.phoneNumber}
                     </TableCell>
-                    <TableCell className="text-right font-medium text-emerald-600">
+                    <TableCell className="text-right font-bold font-mono text-[#087F5B]">
                       {formatPesewas(member.totalPaidPesewas)}
                     </TableCell>
-                    <TableCell className="text-right font-medium text-amber-600">
+                    <TableCell className="text-right font-bold font-mono text-[#B45309]">
                       {formatPesewas(member.outstandingBalancePesewas)}
                     </TableCell>
-                    <TableCell className="text-right font-medium text-muted-foreground">
+                    <TableCell className="text-right font-medium font-mono text-[#102A43]">
                       {formatPesewas(member.totalPayoutsPesewas)}
                     </TableCell>
                     <TableCell className="text-center">

@@ -28,7 +28,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { StatusBadge } from "@/components/members/status-badge";
+import { StatusBadge } from "@/components/ui/status-badge";
 import { MemberFormDialog } from "@/components/members/member-form-dialog";
 import { StatusDialog } from "@/components/members/status-dialog";
 import { formatPesewas } from "@/lib/formatting/currency";
@@ -305,34 +305,34 @@ export default function MemberDetailsPage() {
       </div>
 
       {/* Tabs */}
-      <div className="border-b">
+      <div className="border-b border-[#E2E8F0]">
         <div className="flex gap-4">
           <button
             onClick={() => setActiveTab("obligations")}
-            className={`border-b-2 pb-3 text-sm font-medium transition-colors ${
+            className={`border-b-2 pb-3 text-sm font-semibold transition-colors ${
               activeTab === "obligations"
-                ? "border-primary text-primary"
-                : "border-transparent text-muted-foreground hover:text-foreground"
+                ? "border-[#087F5B] text-[#087F5B]"
+                : "border-transparent text-[#64748B] hover:text-[#102A43]"
             }`}
           >
             Contribution Obligations ({obligations.length})
           </button>
           <button
             onClick={() => setActiveTab("payouts")}
-            className={`border-b-2 pb-3 text-sm font-medium transition-colors ${
+            className={`border-b-2 pb-3 text-sm font-semibold transition-colors ${
               activeTab === "payouts"
-                ? "border-primary text-primary"
-                : "border-transparent text-muted-foreground hover:text-foreground"
+                ? "border-[#087F5B] text-[#087F5B]"
+                : "border-transparent text-[#64748B] hover:text-[#102A43]"
             }`}
           >
             Payout History ({payouts.length})
           </button>
           <button
             onClick={() => setActiveTab("payments")}
-            className={`border-b-2 pb-3 text-sm font-medium transition-colors ${
+            className={`border-b-2 pb-3 text-sm font-semibold transition-colors ${
               activeTab === "payments"
-                ? "border-primary text-primary"
-                : "border-transparent text-muted-foreground hover:text-foreground"
+                ? "border-[#087F5B] text-[#087F5B]"
+                : "border-transparent text-[#64748B] hover:text-[#102A43]"
             }`}
           >
             Payment Transactions ({recentPayments.length})
@@ -390,33 +390,26 @@ export default function MemberDetailsPage() {
                             </span>
                           )}
                         </TableCell>
-                        <TableCell className="text-right font-medium">
+                        <TableCell className="text-right font-mono font-medium text-[#102A43]">
                           {formatPesewas(ob.amount)}
                         </TableCell>
-                        <TableCell className="text-right font-medium text-emerald-600">
+                        <TableCell className="text-right font-mono font-bold text-[#087F5B]">
                           {formatPesewas(ob.paidAmount)}
                         </TableCell>
-                        <TableCell className="text-right font-medium text-amber-600">
+                        <TableCell className="text-right font-mono font-bold text-[#B45309]">
                           {formatPesewas(Math.max(0, ob.amount - ob.paidAmount))}
                         </TableCell>
                         <TableCell className="text-center">
-                          <span
-                            className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-semibold ${
-                              ob.status === "PAID"
-                                ? "bg-green-100 text-green-800 dark:bg-green-950 dark:text-green-300"
-                                : ob.status === "PARTIAL"
-                                ? "bg-blue-100 text-blue-800 dark:bg-blue-950 dark:text-blue-300"
-                                : isOverdue
-                                ? "bg-red-100 text-red-800 dark:bg-red-950 dark:text-red-300"
-                                : "bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-gray-300"
-                            }`}
-                          >
-                            {isOverdue && ob.status === "PENDING"
-                              ? "OVERDUE"
-                              : isOverdue && ob.status === "PARTIAL"
-                              ? "OVERDUE / PARTIAL"
-                              : ob.status}
-                          </span>
+                          <StatusBadge
+                            status={
+                              isOverdue && ob.status === "PENDING"
+                                ? "OVERDUE"
+                                : isOverdue && ob.status === "PARTIAL"
+                                ? "OVERDUE_PARTIAL"
+                                : ob.status
+                            }
+                            size="sm"
+                          />
                         </TableCell>
                       </TableRow>
                     );
@@ -483,9 +476,7 @@ export default function MemberDetailsPage() {
                         </div>
                       </TableCell>
                       <TableCell className="text-center">
-                        <span className="inline-flex items-center rounded-full bg-secondary px-2.5 py-0.5 text-xs font-semibold">
-                          {p.status}
-                        </span>
+                        <StatusBadge status={p.status} size="sm" />
                       </TableCell>
                     </TableRow>
                   ))
@@ -527,19 +518,17 @@ export default function MemberDetailsPage() {
                   recentPayments.map((pm) => (
                     <TableRow key={pm.id}>
                       <TableCell>{formatDate(pm.paymentDate)}</TableCell>
-                      <TableCell className="font-medium">
+                      <TableCell className="font-medium text-[#102A43]">
                         {pm.channel.replace("_", " ")}
                       </TableCell>
-                      <TableCell className="font-mono text-xs">
+                      <TableCell className="font-mono text-xs text-[#64748B]">
                         {pm.reference || "None"}
                       </TableCell>
-                      <TableCell className="text-right font-medium text-emerald-600">
+                      <TableCell className="text-right font-mono font-bold text-[#087F5B]">
                         {formatPesewas(pm.amount)}
                       </TableCell>
                       <TableCell className="text-center">
-                        <span className="inline-flex items-center rounded-full bg-emerald-50 px-2.5 py-0.5 text-xs font-semibold text-emerald-700">
-                          {pm.status}
-                        </span>
+                        <StatusBadge status={pm.status} size="sm" />
                       </TableCell>
                     </TableRow>
                   ))

@@ -42,7 +42,7 @@ export function Sidebar() {
       <Button
         variant="ghost"
         size="icon"
-        className="fixed left-4 top-4 z-50 md:hidden"
+        className="fixed left-4 top-4 z-50 md:hidden bg-[#102A43] text-white hover:bg-[#1B3A5A] hover:text-white"
         onClick={() => setIsMobileOpen(!isMobileOpen)}
       >
         {isMobileOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
@@ -51,7 +51,7 @@ export function Sidebar() {
       {/* Mobile overlay */}
       {isMobileOpen && (
         <div
-          className="fixed inset-0 z-40 bg-background/80 backdrop-blur-sm md:hidden"
+          className="fixed inset-0 z-40 bg-[#102A43]/70 backdrop-blur-xs md:hidden"
           onClick={() => setIsMobileOpen(false)}
         />
       )}
@@ -59,25 +59,25 @@ export function Sidebar() {
       {/* Sidebar */}
       <aside
         className={cn(
-          "fixed inset-y-0 left-0 z-40 flex w-64 flex-col border-r bg-card transition-transform md:static md:translate-x-0",
+          "fixed inset-y-0 left-0 z-40 flex w-64 flex-col border-r border-[#1B3A5A] bg-[#102A43] text-white transition-transform md:static md:translate-x-0 shadow-lg md:shadow-none",
           isMobileOpen ? "translate-x-0" : "-translate-x-full"
         )}
       >
         {/* Logo */}
-        <div className="flex h-16 items-center gap-2 border-b px-6">
-          <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary text-primary-foreground">
-            <span className="text-sm font-bold">R</span>
+        <div className="flex h-16 items-center gap-2.5 border-b border-[#1B3A5A] px-6">
+          <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-[#087F5B] text-white shadow-xs">
+            <span className="text-base font-bold tracking-tight">R</span>
           </div>
           <div>
-            <h2 className="text-lg font-semibold">RSCMS</h2>
-            <p className="text-[10px] leading-tight text-muted-foreground">
+            <h2 className="text-base font-bold text-white tracking-wide">RSCMS</h2>
+            <p className="text-[11px] leading-tight text-slate-300 font-medium">
               Savings Management
             </p>
           </div>
         </div>
 
         {/* Navigation */}
-        <nav className="flex-1 space-y-1 overflow-y-auto p-3">
+        <nav className="flex-1 space-y-1.5 overflow-y-auto p-3">
           {navigation.map((item) => {
             const isActive = pathname === item.href || pathname.startsWith(item.href + "/");
             return (
@@ -86,13 +86,13 @@ export function Sidebar() {
                 href={item.href}
                 onClick={() => setIsMobileOpen(false)}
                 className={cn(
-                  "flex items-center gap-3 rounded-md px-3 py-2 text-sm font-medium transition-colors",
+                  "flex items-center gap-3 rounded-md px-3 py-2 text-sm font-semibold transition-all focus:outline-none focus:ring-2 focus:ring-white/40",
                   isActive
-                    ? "bg-primary/10 text-primary"
-                    : "text-muted-foreground hover:bg-accent hover:text-accent-foreground"
+                    ? "bg-[#087F5B] text-white shadow-sm"
+                    : "text-slate-300 hover:bg-white/10 hover:text-white"
                 )}
               >
-                <item.icon className="h-4 w-4" />
+                <item.icon className="h-4 w-4 shrink-0" />
                 {item.name}
               </Link>
             );
@@ -100,13 +100,12 @@ export function Sidebar() {
         </nav>
 
         {/* Footer */}
-        <div className="border-t p-4">
-          <Separator className="mb-3" />
-          <p className="text-xs text-muted-foreground">
-            RSCMS v0.1.0
+        <div className="border-t border-[#1B3A5A] p-4 bg-[#0D2237]">
+          <p className="text-xs font-semibold text-slate-300">
+            RSCMS Enterprise
           </p>
-          <p className="text-[10px] text-muted-foreground">
-            Ghana Cedis (GHS)
+          <p className="text-[11px] text-slate-400">
+            Ghana Cedis (GHS) · v0.1.0
           </p>
         </div>
       </aside>

@@ -28,6 +28,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { EditDeadlineDialog } from "@/components/cycles/edit-deadline-dialog";
+import { StatusBadge } from "@/components/ui/status-badge";
 import { formatPesewas } from "@/lib/formatting/currency";
 import { formatDate } from "@/lib/formatting/date";
 
@@ -159,17 +160,17 @@ export default function ContributionsPage() {
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
           <div className="flex items-center gap-2">
-            <h1 className="text-3xl font-bold tracking-tight">Contributions</h1>
-            <span className="rounded-full bg-primary/10 px-2.5 py-0.5 text-xs font-semibold text-primary">
+            <h1 className="text-3xl font-bold tracking-tight text-[#102A43]">Contributions</h1>
+            <span className="rounded-full bg-[#E6F4EF] border border-[#A3E0CE] px-2.5 py-0.5 text-xs font-bold text-[#066849]">
               Cycle {cycle.cycleNumber}
             </span>
           </div>
-          <p className="text-sm text-muted-foreground">
+          <p className="text-sm text-[#475569]">
             Monthly contribution obligations for the {periods.length} group participants.
           </p>
         </div>
 
-        <Button asChild>
+        <Button asChild className="bg-[#087F5B] text-white hover:bg-[#066849]">
           <Link href="/payments">
             <CreditCard className="mr-2 h-4 w-4" />
             Record Payment
@@ -203,61 +204,61 @@ export default function ContributionsPage() {
       {/* KPI Summary Cards */}
       {summary && (
         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-          <Card>
+          <Card className="border border-[#E2E8F0] bg-white shadow-xs">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Total Expected</CardTitle>
-              <Wallet className="h-4 w-4 text-muted-foreground" />
+              <CardTitle className="text-xs font-semibold uppercase tracking-wider text-[#64748B]">Total Expected</CardTitle>
+              <Wallet className="h-4 w-4 text-[#64748B]" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">
+              <div className="text-2xl font-bold font-mono text-[#102A43]">
                 {formatPesewas(summary.totalExpectedPesewas)}
               </div>
-              <p className="text-xs text-muted-foreground">
+              <p className="mt-1 text-xs text-[#64748B]">
                 {formatPesewas(cycle.monthlyTarget)} × {periods.length} months in Cycle {cycle.cycleNumber}
               </p>
             </CardContent>
           </Card>
 
-          <Card>
+          <Card className="border border-[#E2E8F0] bg-white shadow-xs">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Verified Collections</CardTitle>
-              <CheckCircle2 className="h-4 w-4 text-emerald-600" />
+              <CardTitle className="text-xs font-semibold uppercase tracking-wider text-[#64748B]">Verified Collections</CardTitle>
+              <CheckCircle2 className="h-4 w-4 text-[#087F5B]" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold text-emerald-600">
+              <div className="text-2xl font-bold font-mono text-[#087F5B]">
                 {formatPesewas(summary.totalVerifiedPesewas)}
               </div>
-              <p className="text-xs text-muted-foreground">
+              <p className="mt-1 text-xs text-[#64748B]">
                 From verified payments only
               </p>
             </CardContent>
           </Card>
 
-          <Card>
+          <Card className="border border-[#E2E8F0] bg-white shadow-xs">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Outstanding Balance</CardTitle>
-              <ArrowUpDown className="h-4 w-4 text-amber-600" />
+              <CardTitle className="text-xs font-semibold uppercase tracking-wider text-[#64748B]">Outstanding Balance</CardTitle>
+              <ArrowUpDown className="h-4 w-4 text-[#B45309]" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold text-amber-600">
+              <div className="text-2xl font-bold font-mono text-[#B45309]">
                 {formatPesewas(summary.totalOutstandingPesewas)}
               </div>
-              <p className="text-xs text-muted-foreground">
+              <p className="mt-1 text-xs text-[#64748B]">
                 Total unpaid across cycle
               </p>
             </CardContent>
           </Card>
 
-          <Card>
+          <Card className="border border-[#E2E8F0] bg-white shadow-xs">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Collection Rate</CardTitle>
-              <Clock className="h-4 w-4 text-primary" />
+              <CardTitle className="text-xs font-semibold uppercase tracking-wider text-[#64748B]">Collection Rate</CardTitle>
+              <Clock className="h-4 w-4 text-[#087F5B]" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold text-primary">
+              <div className="text-2xl font-bold font-mono text-[#087F5B]">
                 {summary.collectionRatePercent}%
               </div>
-              <p className="text-xs text-muted-foreground">
+              <p className="mt-1 text-xs text-[#64748B]">
                 Cycle fulfillment progress
               </p>
             </CardContent>
@@ -266,14 +267,14 @@ export default function ContributionsPage() {
       )}
 
       {/* Period Filter Tabs */}
-      <div className="border-b">
+      <div className="border-b border-[#E2E8F0]">
         <div className="flex gap-2">
           <button
             onClick={() => setSelectedPeriodTab("ALL")}
-            className={`border-b-2 px-3 pb-3 text-sm font-medium transition-colors ${
+            className={`border-b-2 px-3 pb-3 text-sm font-semibold transition-colors ${
               selectedPeriodTab === "ALL"
-                ? "border-primary text-primary"
-                : "border-transparent text-muted-foreground hover:text-foreground"
+                ? "border-[#087F5B] text-[#087F5B]"
+                : "border-transparent text-[#64748B] hover:text-[#102A43]"
             }`}
           >
             All Periods
@@ -282,15 +283,15 @@ export default function ContributionsPage() {
             <button
               key={p.id}
               onClick={() => setSelectedPeriodTab(p.periodNumber)}
-              className={`flex items-center gap-2 border-b-2 px-3 pb-3 text-sm font-medium transition-colors ${
+              className={`flex items-center gap-2 border-b-2 px-3 pb-3 text-sm font-semibold transition-colors ${
                 selectedPeriodTab === p.periodNumber
-                  ? "border-primary text-primary"
-                  : "border-transparent text-muted-foreground hover:text-foreground"
+                  ? "border-[#087F5B] text-[#087F5B]"
+                  : "border-transparent text-[#64748B] hover:text-[#102A43]"
               }`}
             >
               <span>Month {p.periodNumber}</span>
               {p.isOverdue && p.outstandingPesewas > 0 && (
-                <span className="h-2 w-2 rounded-full bg-destructive" />
+                <span className="h-2 w-2 rounded-full bg-[#B42318]" />
               )}
             </button>
           ))}
@@ -314,23 +315,18 @@ export default function ContributionsPage() {
                 <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
                   <div className="space-y-1">
                     <div className="flex items-center gap-3">
-                      <CardTitle className="text-lg">
+                      <CardTitle className="text-lg font-bold text-[#102A43]">
                         Period {period.periodNumber}
                       </CardTitle>
-                      {period.isOverdue ? (
-                        <span className="inline-flex items-center gap-1 rounded-full bg-red-100 px-2.5 py-0.5 text-xs font-semibold text-red-800 dark:bg-red-950 dark:text-red-300">
-                          <AlertTriangle className="h-3 w-3" />
-                          Passed Deadline
-                        </span>
-                      ) : (
-                        <span className="inline-flex items-center rounded-full bg-blue-100 px-2.5 py-0.5 text-xs font-semibold text-blue-800 dark:bg-blue-950 dark:text-blue-300">
-                          Active Window
-                        </span>
-                      )}
+                      <StatusBadge
+                        status={period.isOverdue ? "OVERDUE" : "PENDING"}
+                        customLabel={period.isOverdue ? "Passed Deadline" : "Active Window"}
+                        size="sm"
+                      />
                     </div>
-                    <CardDescription className="text-xs">
+                    <CardDescription className="text-xs text-[#64748B]">
                       Start: {formatDate(period.startDate)} &bull; Deadline:{" "}
-                      <span className="font-semibold text-foreground">
+                      <span className="font-semibold text-[#102A43]">
                         {formatDate(period.dueDate)}
                       </span>
                     </CardDescription>
@@ -367,9 +363,9 @@ export default function ContributionsPage() {
                 </div>
 
                 {/* Progress bar */}
-                <div className="mt-3 h-2 w-full overflow-hidden rounded-full bg-muted">
+                <div className="mt-3 h-2 w-full overflow-hidden rounded-full bg-slate-100 border border-[#E2E8F0]">
                   <div
-                    className="h-full bg-primary transition-all duration-300"
+                    className="h-full bg-[#087F5B] transition-all duration-300"
                     style={{ width: `${progressPercent}%` }}
                   />
                 </div>
@@ -379,68 +375,54 @@ export default function ContributionsPage() {
                 <Table>
                   <TableHeader>
                     <TableRow>
-                      <TableHead className="w-16 text-center">Seat</TableHead>
-                      <TableHead>Member</TableHead>
-                      <TableHead>Phone Number</TableHead>
-                      <TableHead className="text-right">Expected</TableHead>
-                      <TableHead className="text-right">Verified Paid</TableHead>
-                      <TableHead className="text-right">Balance Due</TableHead>
-                      <TableHead className="text-center">Status</TableHead>
-                      <TableHead className="text-right">Action</TableHead>
+                      <TableHead className="w-16 text-center text-[#102A43]">Seat</TableHead>
+                      <TableHead className="text-[#102A43]">Member</TableHead>
+                      <TableHead className="text-[#102A43]">Phone Number</TableHead>
+                      <TableHead className="text-right text-[#102A43]">Expected</TableHead>
+                      <TableHead className="text-right text-[#102A43]">Verified Paid</TableHead>
+                      <TableHead className="text-right text-[#102A43]">Balance Due</TableHead>
+                      <TableHead className="text-center text-[#102A43]">Status</TableHead>
+                      <TableHead className="text-right text-[#102A43]">Action</TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
                     {period.obligations.map((obligation) => (
                       <TableRow key={obligation.id}>
                         <TableCell className="text-center font-bold">
-                          <span className="inline-flex h-6 w-6 items-center justify-center rounded-full bg-primary/10 text-xs text-primary">
+                          <span className="inline-flex h-6 w-6 items-center justify-center rounded-full bg-[#E6F4EF] text-xs font-bold text-[#066849] border border-[#A3E0CE]">
                             {obligation.rotationPosition}
                           </span>
                         </TableCell>
                         <TableCell>
                           <Link
                             href={`/members/${obligation.memberId}`}
-                            className="font-medium hover:text-primary hover:underline"
+                            className="font-semibold text-[#102A43] hover:text-[#087F5B] hover:underline"
                           >
                             {obligation.memberName}
                           </Link>
                         </TableCell>
-                        <TableCell className="font-mono text-xs">
+                        <TableCell className="font-mono text-xs text-[#475569]">
                           {obligation.memberPhone}
                         </TableCell>
-                        <TableCell className="text-right font-medium">
+                        <TableCell className="text-right font-medium font-mono text-[#102A43]">
                           {formatPesewas(obligation.amount)}
                         </TableCell>
-                        <TableCell className="text-right font-medium text-emerald-600">
+                        <TableCell className="text-right font-bold font-mono text-[#087F5B]">
                           {formatPesewas(obligation.paidAmount)}
                         </TableCell>
-                        <TableCell className="text-right font-medium text-amber-600">
+                        <TableCell className="text-right font-bold font-mono text-[#B45309]">
                           {formatPesewas(obligation.outstandingAmount)}
                         </TableCell>
                         <TableCell className="text-center">
-                          <span
-                            className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-semibold ${
-                              obligation.status === "PAID"
-                                ? "bg-green-100 text-green-800 dark:bg-green-950 dark:text-green-300"
-                                : obligation.status === "PARTIAL"
-                                ? "bg-blue-100 text-blue-800 dark:bg-blue-950 dark:text-blue-300"
-                                : obligation.status === "OVERDUE"
-                                ? "bg-red-100 text-red-800 dark:bg-red-950 dark:text-red-300"
-                                : obligation.status === "OVERDUE_PARTIAL"
-                                ? "bg-amber-100 text-amber-800 dark:bg-amber-950 dark:text-amber-300"
-                                : "bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-gray-300"
-                            }`}
-                          >
-                            {obligation.status.replace("_", " ")}
-                          </span>
+                          <StatusBadge status={obligation.status} size="sm" />
                         </TableCell>
                         <TableCell className="text-right">
                           {obligation.outstandingAmount > 0 ? (
                             <Button
-                              variant="ghost"
+                              variant="outline"
                               size="sm"
                               asChild
-                              className="text-primary hover:text-primary"
+                              className="border-[#CBD5E1] text-[#087F5B] hover:bg-[#E6F4EF]"
                             >
                               <Link
                                 href={`/payments?memberId=${obligation.memberId}&periodId=${period.id}`}
