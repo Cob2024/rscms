@@ -186,7 +186,7 @@ export class CycleService {
   }
 
   /**
-   * Create a new four-month savings cycle with 4 periods, 16 obligations, and 4 payout schedules.
+   * Create a new savings cycle with periods, obligations, and payout schedules.
    */
   static async createCycle(adminId: string, input: CreateCycleInput) {
     const group = await this.getActiveGroup();
@@ -345,7 +345,7 @@ export class CycleService {
           data: allObligations,
         });
 
-        // Batch insert all 4 payout schedules in ONE query
+        // Batch insert all payout schedules in ONE query
         await tx.payoutSchedule.createMany({
           data: allPayoutSchedules,
         });
