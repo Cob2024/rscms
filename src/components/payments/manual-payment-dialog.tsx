@@ -1,6 +1,7 @@
 "use client";
 
-import { useState, useId, useEffect } from "react";
+import { useState, useId, useEffect, useRef } from "react";
+import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -18,6 +19,10 @@ import {
   CheckCircle2,
   AlertCircle,
   Sparkles,
+  Calendar,
+  Users,
+  Info,
+  ArrowRight,
 } from "lucide-react";
 
 interface MemberOption {
@@ -116,12 +121,8 @@ export function ManualPaymentDialog({
   preselectedMemberId,
   preselectedObligationId,
 }: ManualPaymentDialogProps) {
-  const [selectedMemberId, setSelectedMemberId] = useState(
-    preselectedMemberId || ""
-  );
-  const [selectedObligationId, setSelectedObligationId] = useState(
-    preselectedObligationId || ""
-  );
+  const [selectedMemberId, setSelectedMemberId] = useState(preselectedMemberId || "");
+  const [selectedObligationId, setSelectedObligationId] = useState(preselectedObligationId || "");
   const [amountStr, setAmountStr] = useState("250.00");
   const [channel, setChannel] = useState<string>("MTN_MOMO");
   const [paymentDate, setPaymentDate] = useState(() => {
@@ -138,35 +139,106 @@ export function ManualPaymentDialog({
   const [error, setError] = useState<string | null>(null);
 
   const dialogId = useId();
+  const selectedMemberIdRef = useRef(selectedMemberId);
 
-  // Filter obligations by selected member
+  useEffect(() => {
+    selectedMemberIdRef.current = selectedMemberId;
+  }, [selectedMemberId]);
+
+  // Reset and synchronize state when dialog opens or dependencies change
+  useEffect(() => {
+    if (!isOpen) return;
+
+    setError(null);
+    setIsSubmitting(false);
+
+    // Refresh default timestamp
+    const now = new Date();
+    setPaymentDate(
+      new Date(now.getTime() - now.getTimezoneOffset() * 60000)
+        .toISOString()
+        .slice(0, 16)
+    );
+
+    // Determine initial member: preselected, or current if still valid, or first member in group
+    const initialMemberId =
+      (preselectedMemberId && members.some((m) => m.id === preselectedMemberId)
+        ? preselectedMemberId
+        : selectedMemberIdRef.current && members.some((m) => m.id === selectedMemberIdRef.current)
+        ? selectedMemberIdRef.current
+        : members[0]?.id) || "";
+
+    setSelectedMemberId(initialMemberId);
+
+    // Determine initial obligation for this member
+    const mObls = obligations.filter((o) => o.memberId === initialMemberId);
+    const targetObl =
+      (preselectedObligationId && mObls.find((o) => o.id === preselectedObligationId)) ||
+      mObls.find((o) => o.amount - o.paidAmount > 0) ||
+      mObls[0];
+
+    if (targetObl) {
+      setSelectedObligationId(targetObl.id);
+      const remaining = Math.max(0, targetObl.amount - targetObl.paidAmount);
+      setAmountStr(
+        remaining > 0 ? (remaining / 100).toFixed(2) : (targetObl.amount / 100).toFixed(2)
+      );
+    } else {
+      setSelectedObligationId("");
+      setAmountStr("250.00");
+    }
+  }, [isOpen, preselectedMemberId, preselectedObligationId, members, obligations]);
+
+  // Obligations for currently selected member
   const memberObligations = obligations.filter(
     (o) => o.memberId === selectedMemberId
   );
 
-  // Auto-select first unpaid obligation when member changes
-  useEffect(() => {
-    if (selectedMemberId) {
-      const match = memberObligations.find(
-        (o) => o.amount - o.paidAmount > 0
-      );
-      if (match && !selectedObligationId) {
-        setSelectedObligationId(match.id);
-        const remaining = match.amount - match.paidAmount;
-        setAmountStr((remaining / 100).toFixed(2));
-      }
-    }
-  }, [selectedMemberId, memberObligations, selectedObligationId]);
-
-  // When obligation changes, auto-fill remaining balance
+  // Active obligation currently picked in dropdown
   const activeObligation = obligations.find((o) => o.id === selectedObligationId);
+  const remainingForActive = activeObligation
+    ? Math.max(0, activeObligation.amount - activeObligation.paidAmount)
+    : 0;
 
+  // Parsed amount in pesewas
+  const parsedPesewas = parseCediToPesewas(amountStr);
+  const isOverpaying =
+    activeObligation &&
+    parsedPesewas !== null &&
+    remainingForActive > 0 &&
+    parsedPesewas > remainingForActive;
+
+  // Member selection change handler
+  const handleMemberChange = (newMemberId: string) => {
+    setSelectedMemberId(newMemberId);
+    setError(null);
+
+    const mObls = obligations.filter((o) => o.memberId === newMemberId);
+    const targetObl =
+      mObls.find((o) => o.amount - o.paidAmount > 0) || mObls[0];
+
+    if (targetObl) {
+      setSelectedObligationId(targetObl.id);
+      const remaining = Math.max(0, targetObl.amount - targetObl.paidAmount);
+      setAmountStr(
+        remaining > 0 ? (remaining / 100).toFixed(2) : (targetObl.amount / 100).toFixed(2)
+      );
+    } else {
+      setSelectedObligationId("");
+      setAmountStr("250.00");
+    }
+  };
+
+  // Obligation selection change handler
   const handleObligationChange = (oblId: string) => {
     setSelectedObligationId(oblId);
+    setError(null);
     const obl = obligations.find((o) => o.id === oblId);
     if (obl) {
       const remaining = Math.max(0, obl.amount - obl.paidAmount);
-      setAmountStr((remaining / 100).toFixed(2));
+      setAmountStr(
+        remaining > 0 ? (remaining / 100).toFixed(2) : (obl.amount / 100).toFixed(2)
+      );
     }
   };
 
@@ -179,6 +251,18 @@ export function ManualPaymentDialog({
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError(null);
+
+    if (members.length === 0) {
+      setError("No registered members found. Please register members first.");
+      return;
+    }
+
+    if (obligations.length === 0) {
+      setError(
+        "No active savings cycle found. In RSCMS, every contribution must be linked to a specific monthly cycle obligation. Please launch a cycle in Settings."
+      );
+      return;
+    }
 
     if (!selectedMemberId) {
       setError("Please select the contributing member.");
@@ -198,9 +282,15 @@ export function ManualPaymentDialog({
 
     if (activeObligation) {
       const remaining = activeObligation.amount - activeObligation.paidAmount;
-      if (pesewas > remaining) {
+      if (remaining > 0 && pesewas > remaining) {
         setError(
-          `Amount exceeds remaining balance of ${formatPesewas(remaining)} for this period.`
+          `Amount exceeds remaining balance of ${formatPesewas(remaining)} for Period ${activeObligation.periodNumber}.`
+        );
+        return;
+      }
+      if (remaining === 0) {
+        setError(
+          `Period ${activeObligation.periodNumber} for this member is already fully settled.`
         );
         return;
       }
@@ -246,6 +336,16 @@ export function ManualPaymentDialog({
 
   if (!isOpen) return null;
 
+  const canSubmit =
+    !isSubmitting &&
+    members.length > 0 &&
+    obligations.length > 0 &&
+    Boolean(selectedMemberId) &&
+    Boolean(selectedObligationId) &&
+    !isOverpaying &&
+    (parsedPesewas ?? 0) > 0 &&
+    Boolean(reference.trim());
+
   return (
     <div
       role="dialog"
@@ -264,12 +364,12 @@ export function ManualPaymentDialog({
           <X className="h-5 w-5" />
         </button>
 
-        <div className="mb-6">
+        <div className="mb-5">
           <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-primary/10 text-primary mb-2">
             <CreditCard className="h-3.5 w-3.5" />
             <span>Manual Payment Entry</span>
           </div>
-          <h2 id={`${dialogId}-title`} className="text-xl font-bold tracking-tight">
+          <h2 id={`${dialogId}-title`} className="text-xl font-bold tracking-tight text-foreground">
             Record Member Contribution
           </h2>
           <p className="text-sm text-muted-foreground mt-1">
@@ -278,6 +378,79 @@ export function ManualPaymentDialog({
           </p>
         </div>
 
+        {/* Informational Guidance: Zero Members State */}
+        {members.length === 0 && (
+          <div className="mb-5 rounded-lg border border-amber-300 bg-amber-50 p-4 text-sm text-amber-900 dark:border-amber-800 dark:bg-amber-950/40 dark:text-amber-200">
+            <div className="flex items-start gap-3">
+              <Users className="h-5 w-5 shrink-0 text-amber-600 dark:text-amber-400 mt-0.5" />
+              <div className="space-y-1">
+                <h4 className="text-sm font-semibold text-amber-950 dark:text-amber-100">
+                  No Members Registered Yet
+                </h4>
+                <p className="text-xs text-amber-800 dark:text-amber-300 leading-relaxed">
+                  RSCMS manages rotating savings among 4 group participants. Before recording manual
+                  payments, please register the 4 group members with rotation positions 1 through 4.
+                </p>
+                <div className="pt-2">
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    asChild
+                    className="border-amber-400 bg-white hover:bg-amber-100 text-amber-950 dark:bg-amber-900 dark:text-amber-100 dark:hover:bg-amber-800"
+                  >
+                    <Link href="/members">
+                      Go to Members Directory <ArrowRight className="ml-1.5 h-3.5 w-3.5" />
+                    </Link>
+                  </Button>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Informational Guidance: Zero Active Cycle / Obligations State */}
+        {members.length > 0 && obligations.length === 0 && (
+          <div className="mb-5 rounded-lg border border-blue-200 bg-blue-50/80 p-4 text-sm text-blue-900 dark:border-blue-900 dark:bg-blue-950/40 dark:text-blue-200">
+            <div className="flex items-start gap-3">
+              <Calendar className="h-5 w-5 shrink-0 text-blue-600 dark:text-blue-400 mt-0.5" />
+              <div className="space-y-1.5">
+                <div className="flex items-center gap-2">
+                  <h4 className="text-sm font-semibold text-blue-950 dark:text-blue-100">
+                    No Active Savings Cycle (No Obligations Found)
+                  </h4>
+                  <Badge variant="outline" className="text-[10px] bg-blue-100 text-blue-800 border-blue-300">
+                    Cycle Required
+                  </Badge>
+                </div>
+                <p className="text-xs text-blue-800 dark:text-blue-300 leading-relaxed">
+                  <strong>What is a Target Obligation?</strong> In rotating savings (ROSCA / Susu),
+                  contributions are not loose deposits. Each payment must settle a specific monthly
+                  period requirement called an <strong>Obligation</strong> (e.g. Period 1 Contribution
+                  of GH₵250.00).
+                </p>
+                <p className="text-xs text-blue-800 dark:text-blue-300 leading-relaxed">
+                  Because no 4-month savings cycle has been launched yet, there are no obligations in
+                  the system to credit. Please launch an active cycle in Settings to generate the 4
+                  periods and 16 member obligations.
+                </p>
+                <div className="pt-1.5">
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    asChild
+                    className="border-blue-400 bg-white hover:bg-blue-100 text-blue-950 dark:bg-blue-900 dark:text-blue-100 dark:hover:bg-blue-800"
+                  >
+                    <Link href="/settings">
+                      Launch 4-Month Cycle in Settings <ArrowRight className="ml-1.5 h-3.5 w-3.5" />
+                    </Link>
+                  </Button>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Error message */}
         {error && (
           <div className="mb-5 flex items-start gap-2.5 rounded-md border border-destructive/40 bg-destructive/10 p-3 text-sm text-destructive">
             <AlertCircle className="h-4 w-4 shrink-0 mt-0.5" />
@@ -297,14 +470,14 @@ export function ManualPaymentDialog({
             <select
               id={`${dialogId}-member`}
               value={selectedMemberId}
-              onChange={(e) => {
-                setSelectedMemberId(e.target.value);
-                setSelectedObligationId("");
-              }}
+              onChange={(e) => handleMemberChange(e.target.value)}
+              disabled={members.length === 0}
               required
-              className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+              className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:opacity-50"
             >
-              <option value="">Select contributing member...</option>
+              <option value="">
+                {members.length === 0 ? "No members registered yet" : "Select contributing member..."}
+              </option>
               {members.map((m) => (
                 <option key={m.id} value={m.id}>
                   Position {m.rotationPosition}: {m.fullName} ({m.phoneNumber})
@@ -313,59 +486,141 @@ export function ManualPaymentDialog({
             </select>
           </div>
 
-          {/* Obligation / Period Selection */}
+          {/* Obligation / Period Selection (Target Obligation) */}
           <div className="space-y-1.5">
-            <Label htmlFor={`${dialogId}-obligation`}>
-              Target Contribution Period <span className="text-destructive">*</span>
-            </Label>
+            <div className="flex items-center justify-between">
+              <Label htmlFor={`${dialogId}-obligation`}>
+                Target Contribution Period <span className="text-destructive">*</span>
+              </Label>
+              <span className="text-[11px] text-muted-foreground">
+                Period obligation being settled
+              </span>
+            </div>
             <select
               id={`${dialogId}-obligation`}
               value={selectedObligationId}
               onChange={(e) => handleObligationChange(e.target.value)}
-              disabled={!selectedMemberId || memberObligations.length === 0}
+              disabled={
+                !selectedMemberId ||
+                memberObligations.length === 0 ||
+                members.length === 0 ||
+                obligations.length === 0
+              }
               required
               className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:opacity-50"
             >
               <option value="">
-                {!selectedMemberId
+                {members.length === 0
+                  ? "No members registered"
+                  : obligations.length === 0
+                  ? "No active cycle or obligations found"
+                  : !selectedMemberId
                   ? "Select a member first..."
                   : memberObligations.length === 0
                   ? "No obligations found for this member"
-                  : "Select period to credit..."}
+                  : "Select period obligation to credit..."}
               </option>
               {memberObligations.map((obl) => {
                 const remaining = Math.max(0, obl.amount - obl.paidAmount);
+                const isFullyPaid = remaining === 0;
                 return (
                   <option key={obl.id} value={obl.id}>
-                    Period {obl.periodNumber} (Due: {formatDate(new Date(obl.dueDate))}) —
-                    Remaining: {formatPesewas(remaining)} of {formatPesewas(obl.amount)}
+                    Period {obl.periodNumber} (Due: {formatDate(new Date(obl.dueDate))}) —{" "}
+                    {isFullyPaid
+                      ? "✓ Fully Settled (GH₵0.00 remaining)"
+                      : `Remaining: ${formatPesewas(remaining)} of ${formatPesewas(obl.amount)}`}
                   </option>
                 );
               })}
             </select>
+
+            <p className="text-[11px] text-muted-foreground">
+              Every payment must be credited against a specific monthly obligation to update the
+              member&apos;s contribution standing and balanced ledger accounts.
+            </p>
+
+            {/* Active Obligation Breakdown Card */}
             {activeObligation && (
-              <div className="flex items-center justify-between text-xs text-muted-foreground pt-1">
-                <span>
-                  Period {activeObligation.periodNumber} Target:{" "}
-                  <strong>{formatPesewas(activeObligation.amount)}</strong>
-                </span>
-                <span>
-                  Already Paid:{" "}
-                  <strong className="text-emerald-600">
-                    {formatPesewas(activeObligation.paidAmount)}
-                  </strong>
-                </span>
-                <span>
-                  Remaining Balance:{" "}
-                  <strong className="text-primary">
-                    {formatPesewas(
-                      Math.max(
-                        0,
-                        activeObligation.amount - activeObligation.paidAmount
-                      )
+              <div className="mt-2 rounded-md border bg-muted/40 p-3 text-xs space-y-2">
+                <div className="flex items-center justify-between border-b pb-2">
+                  <div className="flex items-center gap-1.5">
+                    <span className="font-semibold text-foreground">
+                      Period {activeObligation.periodNumber} Obligation
+                    </span>
+                    <Badge variant="outline" className="text-[10px] font-normal">
+                      Due: {formatDate(new Date(activeObligation.dueDate))}
+                    </Badge>
+                  </div>
+                  <Badge
+                    variant={
+                      remainingForActive === 0
+                        ? "default"
+                        : activeObligation.paidAmount > 0
+                        ? "secondary"
+                        : "outline"
+                    }
+                    className="text-[10px]"
+                  >
+                    {remainingForActive === 0
+                      ? "FULLY PAID"
+                      : activeObligation.paidAmount > 0
+                      ? "PARTIAL"
+                      : "UNPAID"}
+                  </Badge>
+                </div>
+
+                <div className="grid grid-cols-3 gap-2 pt-0.5">
+                  <div>
+                    <span className="text-muted-foreground block text-[10px] uppercase tracking-wider">
+                      Target
+                    </span>
+                    <strong className="text-foreground font-mono">
+                      {formatPesewas(activeObligation.amount)}
+                    </strong>
+                  </div>
+                  <div>
+                    <span className="text-muted-foreground block text-[10px] uppercase tracking-wider">
+                      Already Paid
+                    </span>
+                    <strong className="text-emerald-600 font-mono">
+                      {formatPesewas(activeObligation.paidAmount)}
+                    </strong>
+                  </div>
+                  <div>
+                    <span className="text-muted-foreground block text-[10px] uppercase tracking-wider">
+                      Remaining Due
+                    </span>
+                    <strong
+                      className={`font-mono ${
+                        remainingForActive === 0 ? "text-muted-foreground" : "text-primary"
+                      }`}
+                    >
+                      {formatPesewas(remainingForActive)}
+                    </strong>
+                  </div>
+                </div>
+
+                {/* Overpayment Warning or Remaining Balance calculation */}
+                {parsedPesewas !== null && parsedPesewas > 0 && (
+                  <div className="pt-1.5 border-t text-[11px] flex items-center justify-between">
+                    <span className="text-muted-foreground">Balance after payment:</span>
+                    {isOverpaying ? (
+                      <span className="font-semibold text-destructive flex items-center gap-1">
+                        <AlertCircle className="h-3 w-3" />
+                        Exceeds period balance by {formatPesewas(parsedPesewas - remainingForActive)}
+                      </span>
+                    ) : (
+                      <span className="font-mono font-semibold text-foreground">
+                        {formatPesewas(Math.max(0, remainingForActive - parsedPesewas))}
+                        {parsedPesewas === remainingForActive && (
+                          <span className="text-emerald-600 ml-1 font-sans font-medium">
+                            (Settles Period)
+                          </span>
+                        )}
+                      </span>
                     )}
-                  </strong>
-                </span>
+                  </div>
+                )}
               </div>
             )}
           </div>
@@ -376,28 +631,36 @@ export function ManualPaymentDialog({
               <Label htmlFor={`${dialogId}-amount`}>
                 Payment Amount (GH₵) <span className="text-destructive">*</span>
               </Label>
-              {activeObligation && (
-                <div className="flex gap-1.5">
+              {activeObligation && remainingForActive > 0 && (
+                <div className="flex items-center gap-1.5">
                   <button
                     type="button"
                     onClick={() => {
-                      const remaining = Math.max(
-                        0,
-                        activeObligation.amount - activeObligation.paidAmount
-                      );
-                      setAmountStr((remaining / 100).toFixed(2));
+                      setAmountStr((remainingForActive / 100).toFixed(2));
                     }}
                     className="text-xs text-primary hover:underline font-medium"
                   >
-                    Remaining ({formatPesewas(Math.max(0, activeObligation.amount - activeObligation.paidAmount))})
+                    Remaining ({formatPesewas(remainingForActive)})
                   </button>
+                  {remainingForActive === 25000 && (
+                    <>
+                      <span className="text-muted-foreground">·</span>
+                      <button
+                        type="button"
+                        onClick={() => setAmountStr("125.00")}
+                        className="text-xs text-primary hover:underline font-medium"
+                      >
+                        Half (GH₵125)
+                      </button>
+                    </>
+                  )}
                   <span className="text-muted-foreground">·</span>
                   <button
                     type="button"
                     onClick={() => setAmountStr("250.00")}
                     className="text-xs text-primary hover:underline font-medium"
                   >
-                    Full GH₵250.00
+                    Full GH₵250
                   </button>
                 </div>
               )}
@@ -413,6 +676,7 @@ export function ManualPaymentDialog({
                 placeholder="250.00"
                 className="pl-12 font-mono font-medium"
                 required
+                disabled={members.length === 0 || obligations.length === 0}
               />
             </div>
             {(() => {
@@ -489,7 +753,9 @@ export function ManualPaymentDialog({
               placeholder={channelMeta[channel]?.placeholderRef || "e.g. REC-12345"}
               className="font-mono"
               required
-            />
+              disabled={members.length === 0 || obligations.length === 0}
+            >
+            </Input>
             <p className="text-[11px] text-muted-foreground">
               Unique financial identifier for MoMo, bank slip, or cash receipt book.
             </p>
@@ -506,6 +772,7 @@ export function ManualPaymentDialog({
               value={paymentDate}
               onChange={(e) => setPaymentDate(e.target.value)}
               required
+              disabled={members.length === 0 || obligations.length === 0}
             />
           </div>
 
@@ -518,6 +785,7 @@ export function ManualPaymentDialog({
               onChange={(e) => setNotes(e.target.value)}
               placeholder="e.g. Received at Saturday monthly meeting, cash envelope signed"
               maxLength={500}
+              disabled={members.length === 0 || obligations.length === 0}
             />
           </div>
 
@@ -551,12 +819,18 @@ export function ManualPaymentDialog({
             >
               Cancel
             </Button>
-            <Button type="submit" disabled={isSubmitting}>
+            <Button type="submit" disabled={!canSubmit || isSubmitting}>
               {isSubmitting ? (
                 <>
                   <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                   Recording...
                 </>
+              ) : members.length === 0 ? (
+                "No Members Registered"
+              ) : obligations.length === 0 ? (
+                "No Active Cycle"
+              ) : isOverpaying ? (
+                "Amount Exceeds Balance"
               ) : (
                 <>
                   <CheckCircle2 className="mr-2 h-4 w-4" />
@@ -570,4 +844,3 @@ export function ManualPaymentDialog({
     </div>
   );
 }
-

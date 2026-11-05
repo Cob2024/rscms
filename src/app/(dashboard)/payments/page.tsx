@@ -1,6 +1,8 @@
 "use client";
 
-import { useCallback, useEffect, useState, useMemo } from "react";
+import { useCallback, useEffect, useState, useMemo, Suspense } from "react";
+import { useSearchParams } from "next/navigation";
+import Link from "next/link";
 import {
   CreditCard,
   Plus,
@@ -17,6 +19,9 @@ import {
   AlertCircle,
   ShieldCheck,
   RefreshCw,
+  Calendar,
+  Users,
+  ArrowRight,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -107,7 +112,15 @@ const channelLabels: Record<string, { label: string; icon: any }> = {
   OTHER: { label: "Other", icon: CreditCard },
 };
 
-export default function PaymentsPage() {
+function PaymentsPageContent() {
+  const searchParams = useSearchParams();
+  const urlMemberId = searchParams?.get("memberId") || undefined;
+  const urlPeriodId = searchParams?.get("periodId") || undefined;
+  const urlObligationId = searchParams?.get("obligationId") || undefined;
+
+  const [preselectedMemberId, setPreselectedMemberId] = useState<string | undefined>(urlMemberId);
+  const [preselectedObligationId, setPreselectedObligationId] = useState<string | undefined>(urlObligationId);
+
   const [payments, setPayments] = useState<PaymentRecord[]>([]);
   const [stats, setStats] = useState<PaymentStats>({
     totalVerifiedPesewas: 0,
@@ -171,6 +184,24 @@ export default function PaymentsPage() {
   useEffect(() => {
     loadData();
   }, [loadData]);
+
+  // Synchronize preselection from URL parameters
+  useEffect(() => {
+    if (urlMemberId) {
+      setPreselectedMemberId(urlMemberId);
+      setIsRecordOpen(true);
+    }
+    if (urlObligationId) {
+      setPreselectedObligationId(urlObligationId);
+    } else if (urlPeriodId && urlMemberId && obligations.length > 0) {
+      const match = obligations.find(
+        (o) => o.memberId === urlMemberId && o.periodId === urlPeriodId
+      );
+      if (match) {
+        setPreselectedObligationId(match.id);
+      }
+    }
+  }, [urlMemberId, urlPeriodId, urlObligationId, obligations]);
 
   const handleVerifyPending = async (paymentId: string) => {
     try {
@@ -240,6 +271,63 @@ export default function PaymentsPage() {
             <h4 className="font-semibold">Unable to load payments</h4>
             <p className="text-xs mt-0.5">{error}</p>
           </div>
+        </div>
+      )}
+
+      {/* Advisory Guidance: No Members State */}
+      {!loading && members.length === 0 && (
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 rounded-lg border border-amber-300 bg-amber-50 p-4 text-amber-900 dark:border-amber-800 dark:bg-amber-950/40 dark:text-amber-200">
+          <div className="flex items-start gap-3">
+            <Users className="h-5 w-5 shrink-0 text-amber-600 dark:text-amber-400 mt-0.5" />
+            <div>
+              <h3 className="font-semibold text-sm text-amber-950 dark:text-amber-100">
+                No Group Members Registered
+              </h3>
+              <p className="text-xs text-amber-800 dark:text-amber-300 mt-0.5 leading-relaxed">
+                RSCMS manages rotating contributions across 4 participants. You must register members in rotation positions 1 through 4 before payments can be recorded.
+              </p>
+            </div>
+          </div>
+          <Button
+            size="sm"
+            asChild
+            className="shrink-0 bg-amber-600 hover:bg-amber-700 text-white"
+          >
+            <Link href="/members">
+              Register Members <ArrowRight className="ml-1.5 h-3.5 w-3.5" />
+            </Link>
+          </Button>
+        </div>
+      )}
+
+      {/* Advisory Guidance: No Active Cycle / Obligations State */}
+      {!loading && members.length > 0 && obligations.length === 0 && (
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 rounded-lg border border-blue-200 bg-blue-50/80 p-4 text-blue-900 dark:border-blue-900 dark:bg-blue-950/40 dark:text-blue-200">
+          <div className="flex items-start gap-3">
+            <Calendar className="h-5 w-5 shrink-0 text-blue-600 dark:text-blue-400 mt-0.5" />
+            <div>
+              <div className="flex items-center gap-2">
+                <h3 className="font-semibold text-sm text-blue-950 dark:text-blue-100">
+                  No Active Savings Cycle (Missing Target Obligations)
+                </h3>
+                <Badge variant="outline" className="text-[10px] bg-blue-100 text-blue-800 border-blue-300">
+                  Setup Step
+                </Badge>
+              </div>
+              <p className="text-xs text-blue-800 dark:text-blue-300 mt-0.5 leading-relaxed">
+                In RSCMS, contributions cannot be recorded as loose deposits. Each payment must be credited against a specific monthly period <strong>Obligation</strong> (e.g. Period 1 Contribution of GH₵250.00). Please launch a 4-month cycle in Settings to generate the period obligations.
+              </p>
+            </div>
+          </div>
+          <Button
+            size="sm"
+            asChild
+            className="shrink-0 bg-blue-600 hover:bg-blue-700 text-white"
+          >
+            <Link href="/settings">
+              Launch Cycle <ArrowRight className="ml-1.5 h-3.5 w-3.5" />
+            </Link>
+          </Button>
         </div>
       )}
 
@@ -422,15 +510,33 @@ export default function PaymentsPage() {
                     <CreditCard className="h-10 w-10 mx-auto text-muted-foreground/40 mb-3" />
                     <p className="font-semibold text-foreground text-base">No payment records found</p>
                     <p className="text-xs text-muted-foreground mt-1 max-w-sm mx-auto">
-                      Record a manual cash, mobile money, or bank payment received from a member.
+                      {members.length === 0
+                        ? "Register 4 group members to begin tracking rotating contributions."
+                        : obligations.length === 0
+                        ? "Launch a 4-month savings cycle in Settings to generate period obligations."
+                        : "Record a manual cash, mobile money, or bank payment received from a member."}
                     </p>
-                    <Button
-                      onClick={() => setIsRecordOpen(true)}
-                      size="sm"
-                      className="mt-4"
-                    >
-                      <Plus className="mr-1.5 h-4 w-4" /> Record First Payment
-                    </Button>
+                    {members.length === 0 ? (
+                      <Button asChild size="sm" className="mt-4">
+                        <Link href="/members">
+                          <Users className="mr-1.5 h-4 w-4" /> Go to Members Directory
+                        </Link>
+                      </Button>
+                    ) : obligations.length === 0 ? (
+                      <Button asChild size="sm" className="mt-4">
+                        <Link href="/settings">
+                          <Calendar className="mr-1.5 h-4 w-4" /> Launch Savings Cycle
+                        </Link>
+                      </Button>
+                    ) : (
+                      <Button
+                        onClick={() => setIsRecordOpen(true)}
+                        size="sm"
+                        className="mt-4"
+                      >
+                        <Plus className="mr-1.5 h-4 w-4" /> Record First Payment
+                      </Button>
+                    )}
                   </TableCell>
                 </TableRow>
               ) : (
@@ -591,12 +697,18 @@ export default function PaymentsPage() {
       {/* Dialogs */}
       <ManualPaymentDialog
         isOpen={isRecordOpen}
-        onClose={() => setIsRecordOpen(false)}
+        onClose={() => {
+          setIsRecordOpen(false);
+          setPreselectedMemberId(undefined);
+          setPreselectedObligationId(undefined);
+        }}
         onSuccess={() => {
           loadData();
         }}
         members={members}
         obligations={obligations}
+        preselectedMemberId={preselectedMemberId}
+        preselectedObligationId={preselectedObligationId}
       />
 
       <ReversePaymentDialog
@@ -614,5 +726,19 @@ export default function PaymentsPage() {
         paymentId={detailsPaymentId}
       />
     </div>
+  );
+}
+
+export default function PaymentsPage() {
+  return (
+    <Suspense
+      fallback={
+        <div className="flex h-64 items-center justify-center">
+          <RefreshCw className="h-6 w-6 animate-spin text-primary" />
+        </div>
+      }
+    >
+      <PaymentsPageContent />
+    </Suspense>
   );
 }
