@@ -12,11 +12,13 @@ import {
   AlertCircle,
   ExternalLink,
   ShieldCheck,
+  Download,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { type ReceiptData } from "@/services/receipt.service";
 import { formatDate } from "@/lib/formatting/date";
 import { formatPesewas } from "@/lib/formatting/currency";
+import { downloadReceiptPdf } from "@/lib/receipts/pdf-generator";
 
 interface ReceiptDialogProps {
   isOpen: boolean;
@@ -30,6 +32,7 @@ export function ReceiptDialog({ isOpen, paymentId, onClose }: ReceiptDialogProps
   const [error, setError] = useState<string | null>(null);
   const [copiedText, setCopiedText] = useState(false);
   const [copiedLink, setCopiedLink] = useState(false);
+  const [isDownloading, setIsDownloading] = useState(false);
 
   useEffect(() => {
     if (!isOpen || !paymentId) {
@@ -66,6 +69,18 @@ export function ReceiptDialog({ isOpen, paymentId, onClose }: ReceiptDialogProps
 
   function handlePrint() {
     window.print();
+  }
+
+  function handleDownloadPdf() {
+    if (!receipt) return;
+    setIsDownloading(true);
+    try {
+      downloadReceiptPdf(receipt);
+    } catch (err) {
+      console.error("PDF download error:", err);
+    } finally {
+      setIsDownloading(false);
+    }
   }
 
   async function handleCopyText() {
@@ -206,10 +221,26 @@ export function ReceiptDialog({ isOpen, paymentId, onClose }: ReceiptDialogProps
                 </Button>
               </div>
 
-              <Button size="sm" variant="secondary" onClick={handlePrint}>
-                <Printer className="mr-1.5 h-3.5 w-3.5" />
-                Print / Save PDF
-              </Button>
+              <div className="flex items-center gap-2">
+                <Button
+                  size="sm"
+                  onClick={handleDownloadPdf}
+                  disabled={isDownloading}
+                  className="bg-primary hover:bg-primary/90 text-primary-foreground font-semibold"
+                >
+                  {isDownloading ? (
+                    <Loader2 className="mr-1.5 h-3.5 w-3.5 animate-spin" />
+                  ) : (
+                    <Download className="mr-1.5 h-3.5 w-3.5" />
+                  )}
+                  Download PDF
+                </Button>
+
+                <Button size="sm" variant="secondary" onClick={handlePrint}>
+                  <Printer className="mr-1.5 h-3.5 w-3.5" />
+                  Print
+                </Button>
+              </div>
             </div>
 
             {/* Printable Receipt Paper Container */}
@@ -358,7 +389,21 @@ export function ReceiptDialog({ isOpen, paymentId, onClose }: ReceiptDialogProps
             </div>
 
             {/* Bottom Modal Actions */}
-            <div className="print-hide mt-6 flex justify-end gap-3 pt-2">
+            <div className="print-hide mt-6 flex flex-wrap items-center justify-between gap-3 pt-3 border-t">
+              <Button
+                size="sm"
+                onClick={handleDownloadPdf}
+                disabled={isDownloading}
+                className="bg-primary hover:bg-primary/90 text-primary-foreground font-semibold"
+              >
+                {isDownloading ? (
+                  <Loader2 className="mr-1.5 h-3.5 w-3.5 animate-spin" />
+                ) : (
+                  <Download className="mr-1.5 h-3.5 w-3.5" />
+                )}
+                Download PDF Receipt
+              </Button>
+
               <Button variant="outline" onClick={onClose}>
                 Close
               </Button>

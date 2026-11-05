@@ -9,11 +9,13 @@ import {
   Loader2,
   AlertCircle,
   Share2,
+  Download,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { type ReceiptData } from "@/services/receipt.service";
 import { formatDate } from "@/lib/formatting/date";
 import { formatPesewas } from "@/lib/formatting/currency";
+import { downloadReceiptPdf } from "@/lib/receipts/pdf-generator";
 
 export default function PublicReceiptPage({
   params,
@@ -23,6 +25,7 @@ export default function PublicReceiptPage({
   const [receipt, setReceipt] = useState<ReceiptData | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [isDownloading, setIsDownloading] = useState(false);
 
   useEffect(() => {
     let isMounted = true;
@@ -51,6 +54,18 @@ export default function PublicReceiptPage({
 
   function handlePrint() {
     window.print();
+  }
+
+  function handleDownloadPdf() {
+    if (!receipt) return;
+    setIsDownloading(true);
+    try {
+      downloadReceiptPdf(receipt);
+    } catch (err) {
+      console.error("PDF download error:", err);
+    } finally {
+      setIsDownloading(false);
+    }
   }
 
   async function handleShare() {
@@ -113,13 +128,26 @@ export default function PublicReceiptPage({
 
           {receipt && (
             <div className="flex items-center gap-2">
+              <Button
+                size="sm"
+                onClick={handleDownloadPdf}
+                disabled={isDownloading}
+                className="bg-primary hover:bg-primary/90 text-primary-foreground font-semibold"
+              >
+                {isDownloading ? (
+                  <Loader2 className="mr-1.5 h-3.5 w-3.5 animate-spin" />
+                ) : (
+                  <Download className="mr-1.5 h-3.5 w-3.5" />
+                )}
+                Download PDF
+              </Button>
               <Button size="sm" variant="outline" onClick={handleShare}>
                 <Share2 className="mr-1.5 h-3.5 w-3.5" />
                 Share
               </Button>
-              <Button size="sm" onClick={handlePrint} className="bg-primary text-primary-foreground">
+              <Button size="sm" variant="secondary" onClick={handlePrint}>
                 <Printer className="mr-1.5 h-3.5 w-3.5" />
-                Print / Save PDF
+                Print
               </Button>
             </div>
           )}
@@ -297,6 +325,23 @@ export default function PublicReceiptPage({
               <p className="mt-0.5">
                 Powered by RSCMS — Rotating Savings and Contribution Management System
               </p>
+            </div>
+
+            {/* Bottom Download CTA */}
+            <div className="print-hide mt-8 flex justify-center">
+              <Button
+                size="lg"
+                onClick={handleDownloadPdf}
+                disabled={isDownloading}
+                className="bg-primary hover:bg-primary/90 text-primary-foreground font-semibold shadow-md gap-2"
+              >
+                {isDownloading ? (
+                  <Loader2 className="h-4 w-4 animate-spin" />
+                ) : (
+                  <Download className="h-4 w-4" />
+                )}
+                Download Official PDF Receipt
+              </Button>
             </div>
           </div>
         ) : null}
