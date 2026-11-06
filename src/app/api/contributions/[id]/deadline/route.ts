@@ -5,14 +5,15 @@ import { requireAdmin } from "@/lib/auth/require-admin";
 
 const input = z.object({ dueDate: z.string().datetime() });
 
-export async function PATCH(request: NextRequest, { params }: { params: { id: string } }) {
+export async function PATCH(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
+    const { id } = await params;
     const admin = await requireAdmin(request);
     if (!admin) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     const parsed = input.safeParse(await request.json());
     if (!parsed.success) return NextResponse.json({ error: "Enter a valid contribution deadline." }, { status: 400 });
     const updated = await prisma.$transaction(async (tx) => {
-      const period = await tx.contributionPeriod.findUnique({ where: { id: params.id } });
+      const period = await tx.contributionPeriod.findUnique({ where: { id } });
       if (!period) throw new Error("PERIOD_NOT_FOUND");
       if (period.dueDate <= new Date()) throw new Error("PERIOD_CLOSED");
       const dueDate = new Date(parsed.data.dueDate);

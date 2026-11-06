@@ -27,7 +27,7 @@ export const createMemberSchema = z.object({
     .nullable()
     .optional(),
   rotationPosition: z
-    .number({ invalid_type_error: "Rotation position must be a number" })
+    .number()
     .int("Rotation position must be an integer")
     .min(1, "Rotation position must be at least 1")
     .max(100, "Rotation position cannot exceed 100"),
@@ -66,9 +66,7 @@ export const updateMemberSchema = z.object({
 });
 
 export const updateMemberStatusSchema = z.object({
-  status: z.nativeEnum(MemberStatus, {
-    errorMap: () => ({ message: "Status must be ACTIVE, INACTIVE, SUSPENDED, or LEFT" }),
-  }),
+  status: z.nativeEnum(MemberStatus),
   reason: z.string().trim().max(250).optional(),
 });
 

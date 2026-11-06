@@ -1,16 +1,16 @@
 import { z } from "zod";
 import { LedgerDirection, TransactionType, AccountType } from "@prisma/client";
 
+export const uuidRegex = /^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$/;
+
 /**
  * Validation schema for a single entry within a manual adjustment.
  */
 export const adjustmentEntrySchema = z.object({
-  accountId: z.string().uuid("Invalid ledger account ID"),
-  direction: z.nativeEnum(LedgerDirection, {
-    errorMap: () => ({ message: "Direction must be DEBIT or CREDIT" }),
-  }),
+  accountId: z.string().regex(uuidRegex, "Invalid ledger account ID"),
+  direction: z.nativeEnum(LedgerDirection),
   amountPesewas: z
-    .number({ required_error: "Amount in pesewas is required" })
+    .number()
     .int("Amount must be strictly an integer in pesewas")
     .positive("Amount must be greater than zero pesewas"),
 });
@@ -31,7 +31,7 @@ export const recordAdjustmentSchema = z
       .optional()
       .or(z.literal("")),
     description: z
-      .string({ required_error: "Description/reason is required" })
+      .string()
       .trim()
       .min(5, "Description must be at least 5 characters")
       .max(500, "Description cannot exceed 500 characters"),
@@ -83,7 +83,7 @@ export const transactionFilterSchema = z.object({
   page: z.coerce.number().int().min(1).default(1),
   limit: z.coerce.number().int().min(1).max(200).default(50),
   type: z.nativeEnum(TransactionType).optional(),
-  accountId: z.string().uuid().optional(),
+  accountId: z.string().regex(uuidRegex, "Invalid account ID").optional(),
   search: z.string().trim().max(100).optional(),
   startDate: z.coerce.date().optional(),
   endDate: z.coerce.date().optional(),

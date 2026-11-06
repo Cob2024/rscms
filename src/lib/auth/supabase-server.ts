@@ -6,7 +6,8 @@ const SESSION_COOKIE = "rscms_access_token";
 
 /** Validate the HttpOnly access-token cookie with Supabase Auth, using only the public anon key. */
 export async function getServerUser() {
-  const token = cookies().get(SESSION_COOKIE)?.value;
+  const cookieStore = await cookies();
+  const token = cookieStore.get(SESSION_COOKIE)?.value;
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
   const anonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
   if (!token || !url || !anonKey) return null;

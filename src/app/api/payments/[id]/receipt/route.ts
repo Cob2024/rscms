@@ -5,8 +5,9 @@ export const dynamic = "force-dynamic";
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
+  const { id } = await params;
   try {
     const origin =
       request.headers.get("origin") ||
@@ -14,7 +15,7 @@ export async function GET(
         ? `${request.headers.get("x-forwarded-proto") || "https"}://${request.headers.get("x-forwarded-host")}`
         : request.nextUrl.origin;
 
-    const receipt = await ReceiptService.getReceiptByPaymentId(params.id, origin);
+    const receipt = await ReceiptService.getReceiptByPaymentId(id, origin);
     return NextResponse.json({ receipt });
   } catch (error) {
     if (error instanceof ReceiptServiceError) {

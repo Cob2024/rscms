@@ -7,8 +7,9 @@ export const dynamic = "force-dynamic";
 
 export async function POST(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
+  const { id } = await params;
   try {
     const admin = await requireAdmin(request);
     if (!admin) {
@@ -27,7 +28,7 @@ export async function POST(
 
     const payment = await PaymentService.reversePayment(
       admin.id,
-      params.id,
+      id,
       parseResult.data.reason
     );
 

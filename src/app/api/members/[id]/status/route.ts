@@ -6,10 +6,11 @@ import { MemberService, MemberServiceError } from "@/services/member.service";
 export const dynamic = "force-dynamic";
 
 interface RouteParams {
-  params: { id: string };
+  params: Promise<{ id: string }>;
 }
 
 export async function PATCH(request: NextRequest, { params }: RouteParams) {
+  const { id } = await params;
   try {
     const admin = await requireAdmin(request);
     if (!admin) {
@@ -27,7 +28,7 @@ export async function PATCH(request: NextRequest, { params }: RouteParams) {
 
     const member = await MemberService.updateMemberStatus(
       admin.id,
-      params.id,
+      id,
       parsed.data.status,
       parsed.data.reason
     );
@@ -37,7 +38,7 @@ export async function PATCH(request: NextRequest, { params }: RouteParams) {
     if (error instanceof MemberServiceError) {
       return NextResponse.json({ error: error.message }, { status: error.statusCode });
     }
-    console.error(`PATCH /api/members/${params.id}/status error:`, error);
+    console.error(`PATCH /api/members/${id}/status error:`, error);
     return NextResponse.json({ error: "Failed to update member status." }, { status: 500 });
   }
 }

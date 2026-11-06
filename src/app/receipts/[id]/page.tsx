@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import { useParams } from "next/navigation";
 import {
   Printer,
   ShieldCheck,
@@ -17,22 +18,21 @@ import { formatDate } from "@/lib/formatting/date";
 import { formatPesewas } from "@/lib/formatting/currency";
 import { downloadReceiptPdf } from "@/lib/receipts/pdf-generator";
 
-export default function PublicReceiptPage({
-  params,
-}: {
-  params: { id: string };
-}) {
+export default function PublicReceiptPage() {
+  const routeParams = useParams();
+  const paymentId = routeParams?.id as string;
   const [receipt, setReceipt] = useState<ReceiptData | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [isDownloading, setIsDownloading] = useState(false);
 
   useEffect(() => {
+    if (!paymentId) return;
     let isMounted = true;
     setIsLoading(true);
     setError(null);
 
-    fetch(`/api/payments/${params.id}/receipt`)
+    fetch(`/api/payments/${paymentId}/receipt`)
       .then(async (res) => {
         const data = await res.json();
         if (!res.ok) {
@@ -50,7 +50,7 @@ export default function PublicReceiptPage({
     return () => {
       isMounted = false;
     };
-  }, [params.id]);
+  }, [paymentId]);
 
   function handlePrint() {
     window.print();

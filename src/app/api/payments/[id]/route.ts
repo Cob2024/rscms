@@ -6,15 +6,16 @@ export const dynamic = "force-dynamic";
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
+  const { id } = await params;
   try {
     const admin = await requireAdmin(request);
     if (!admin) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    const data = await PaymentService.getPaymentById(params.id);
+    const data = await PaymentService.getPaymentById(id);
     return NextResponse.json(data);
   } catch (error) {
     if (error instanceof PaymentServiceError) {
