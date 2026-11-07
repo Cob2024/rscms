@@ -2,8 +2,13 @@ import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 
 // Routes that don't require authentication
-const publicWebRoutes = ["/login", "/forgot-password", "/reset-password"];
-const publicApiRoutes = ["/api/auth/login", "/api/auth/logout", "/api/auth/session", "/api/webhooks"];
+const publicWebRoutes = ["/login", "/forgot-password", "/reset-password", "/receipts"];
+const publicApiRoutes = [
+  "/api/auth/login",
+  "/api/auth/logout",
+  "/api/auth/session",
+  "/api/webhooks",
+];
 
 const SESSION_COOKIE = "rscms_access_token";
 
@@ -17,6 +22,11 @@ export async function middleware(request: NextRequest) {
     pathname.startsWith("/icons") ||
     pathname === "/favicon.ico"
   ) {
+    return NextResponse.next();
+  }
+
+  // Public Landing Page at root
+  if (pathname === "/") {
     return NextResponse.next();
   }
 
@@ -34,26 +44,23 @@ export async function middleware(request: NextRequest) {
     bearerToken ||
     null;
 
-  // Root redirect
-  if (pathname === "/") {
-    if (token) {
-      return NextResponse.redirect(new URL("/dashboard", request.url));
-    }
-    return NextResponse.redirect(new URL("/login", request.url));
-  }
-
-  // If user has token and tries to visit login/auth pages, redirect to dashboard
-  if (token && publicWebRoutes.some((route) => pathname === route)) {
+  // If authenticated user tries to visit login/auth pages, redirect to dashboard
+  if (token && (pathname === "/login" || pathname === "/forgot-password" || pathname === "/reset-password")) {
     return NextResponse.redirect(new URL("/dashboard", request.url));
   }
 
-  // Allow public web routes
+  // Allow public web routes (/login, /forgot-password, /reset-password, /receipts/[id])
   if (publicWebRoutes.some((route) => pathname.startsWith(route))) {
     return NextResponse.next();
   }
 
   // Allow public API routes
   if (publicApiRoutes.some((route) => pathname.startsWith(route))) {
+    return NextResponse.next();
+  }
+
+  // Allow public read of payment receipt (for member receipt viewing)
+  if (/^\/api\/payments\/[^/]+\/receipt$/.test(pathname)) {
     return NextResponse.next();
   }
 
