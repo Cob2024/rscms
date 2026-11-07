@@ -70,52 +70,52 @@ export default function LandingPage() {
   ];
 
   return (
-    <div className="min-h-screen bg-[#F5F7FA] text-[#102A43] antialiased selection:bg-[#087F5B]/20 selection:text-[#087F5B]">
+    <div className="min-h-screen bg-[#F5F7FA] text-[#102A43] antialiased selection:bg-[#087F5B]/20 selection:text-[#087F5B] overflow-x-hidden">
       {/* ─── STICKY GLASS NAVIGATION BAR ─────────────────────────────────────── */}
       <header className="sticky top-0 z-50 backdrop-blur-md bg-white/90 border-b border-[#E2E8F0] transition-all">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-18 sm:h-20 flex items-center justify-between gap-4">
           {/* Logo & Brand Identity */}
-          <Link href="/" className="flex items-center gap-3 group focus:outline-none">
-            <div className="w-10 h-10 rounded-xl bg-[#102A43] flex items-center justify-center text-white shadow-md shadow-[#102A43]/10 group-hover:scale-105 transition-transform duration-200">
-              <span className="font-bold text-lg tracking-tight text-[#087F5B]">₵</span>
+          <Link href="/" className="flex items-center gap-2.5 sm:gap-3 group focus:outline-none shrink-0">
+            <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-[#102A43] flex items-center justify-center text-white shadow-md shadow-[#102A43]/10 group-hover:scale-105 transition-transform duration-200">
+              <span className="font-bold text-base sm:text-lg tracking-tight text-[#087F5B]">₵</span>
             </div>
             <div>
               <div className="flex items-center gap-1.5">
-                <span className="font-extrabold text-xl tracking-tight text-[#102A43]">RSCMS</span>
-                <span className="inline-block px-1.5 py-0.5 text-[10px] font-semibold uppercase tracking-wider bg-[#E6F4EF] text-[#066849] rounded-md border border-[#A3E0CE]">
+                <span className="font-extrabold text-lg sm:text-xl tracking-tight text-[#102A43]">RSCMS</span>
+                <span className="inline-block px-1.5 py-0.5 text-[9px] sm:text-[10px] font-semibold uppercase tracking-wider bg-[#E6F4EF] text-[#066849] rounded-md border border-[#A3E0CE]">
                   GH₵
                 </span>
               </div>
-              <p className="text-[11px] font-medium text-[#64748B] -mt-0.5 tracking-tight">
+              <p className="hidden sm:block text-[11px] font-medium text-[#64748B] -mt-0.5 tracking-tight">
                 Rotating Savings &amp; Collection Management
               </p>
             </div>
           </Link>
 
           {/* Desktop Navigation Links */}
-          <nav className="hidden lg:flex items-center gap-8 text-sm font-semibold text-[#334155]">
-            <a href="#features" className="hover:text-[#087F5B] transition-colors">
+          <nav className="hidden lg:flex items-center gap-7 text-sm font-semibold text-[#334155]">
+            <a href="#features" className="hover:text-[#087F5B] transition-colors py-1">
               Features
             </a>
-            <a href="#how-it-works" className="hover:text-[#087F5B] transition-colors">
+            <a href="#how-it-works" className="hover:text-[#087F5B] transition-colors py-1">
               How It Works
             </a>
-            <a href="#transparency" className="hover:text-[#087F5B] transition-colors">
+            <a href="#transparency" className="hover:text-[#087F5B] transition-colors py-1">
               Transparency
             </a>
-            <a href="#security" className="hover:text-[#087F5B] transition-colors">
+            <a href="#security" className="hover:text-[#087F5B] transition-colors py-1">
               Security
             </a>
-            <a href="#faq" className="hover:text-[#087F5B] transition-colors">
+            <a href="#faq" className="hover:text-[#087F5B] transition-colors py-1">
               FAQ
             </a>
-            <a href="#contact" className="hover:text-[#087F5B] transition-colors">
+            <a href="#contact" className="hover:text-[#087F5B] transition-colors py-1">
               Contact
             </a>
           </nav>
 
-          {/* Action CTAs */}
-          <div className="hidden sm:flex items-center gap-3">
+          {/* Desktop Action CTAs */}
+          <div className="hidden lg:flex items-center gap-3">
             <Link
               href="/login"
               className="inline-flex items-center justify-center px-4 py-2.5 rounded-full text-sm font-semibold text-[#102A43] bg-white border border-[#CBD5E1] hover:bg-[#F8FAFC] transition-colors shadow-sm focus:outline-none focus:ring-2 focus:ring-[#087F5B]/30"
@@ -131,14 +131,23 @@ export default function LandingPage() {
             </Link>
           </div>
 
-          {/* Mobile menu toggle */}
-          <button
-            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className="lg:hidden p-2 text-[#334155] hover:text-[#102A43] focus:outline-none rounded-lg"
-            aria-label="Toggle Navigation Menu"
-          >
-            {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
-          </button>
+          {/* Mobile/Tablet action cluster */}
+          <div className="flex items-center gap-2 lg:hidden">
+            <Link
+              href="/login"
+              className="inline-flex items-center justify-center px-3 py-1.5 rounded-full text-xs font-semibold text-[#087F5B] bg-[#E6F4EF] hover:bg-[#D5EFE6] transition-colors"
+            >
+              Sign In
+            </Link>
+            <button
+              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+              className="p-2 text-[#334155] hover:text-[#102A43] focus:outline-none rounded-lg shrink-0"
+              aria-label="Toggle Navigation Menu"
+              aria-expanded={mobileMenuOpen}
+            >
+              {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+            </button>
+          </div>
         </div>
 
         {/* Mobile dropdown */}
@@ -199,42 +208,42 @@ export default function LandingPage() {
       </header>
 
       {/* ─── HERO SECTION ────────────────────────────────────────────────────── */}
-      <section className="relative overflow-hidden pt-12 pb-20 md:pt-20 md:pb-28">
+      <section className="relative overflow-hidden pt-10 pb-16 sm:pt-16 sm:pb-24 lg:pt-20 lg:pb-28">
         {/* Subtle background ambient gradients */}
         <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-7xl h-96 bg-gradient-to-b from-[#E6F4EF]/60 via-[#F5F7FA]/40 to-transparent pointer-events-none -z-10" />
 
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center max-w-4xl mx-auto space-y-6">
+          <div className="text-center max-w-4xl mx-auto space-y-5 sm:space-y-6">
             {/* Status Eyebrow Badge */}
-            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-semibold bg-[#102A43] text-white shadow-sm">
-              <span className="w-2 h-2 rounded-full bg-[#087F5B] animate-pulse" />
-              <span>COMMUNITY SAVINGS &amp; SUSU MANAGEMENT</span>
+            <div className="inline-flex items-center gap-2 px-3 py-1 sm:px-3.5 sm:py-1.5 rounded-full text-[10px] sm:text-xs font-semibold bg-[#102A43] text-white shadow-sm">
+              <span className="w-2 h-2 rounded-full bg-[#087F5B] animate-pulse shrink-0" />
+              <span>COMMUNITY SAVINGS &amp; SUSU</span>
             </div>
 
             {/* Display Headline */}
-            <h1 className="text-4xl sm:text-6xl lg:text-7xl font-extrabold tracking-[-0.03em] text-[#102A43] leading-[1.08]">
+            <h1 className="text-3xl sm:text-5xl lg:text-7xl font-extrabold tracking-[-0.03em] text-[#102A43] leading-[1.12] sm:leading-[1.08]">
               Group Savings, <br />
               <span className="text-[#087F5B]">Made Simple.</span>
             </h1>
 
             {/* Subline */}
-            <p className="text-base sm:text-xl text-[#334155] max-w-2xl mx-auto font-normal leading-relaxed">
+            <p className="text-sm sm:text-lg lg:text-xl text-[#334155] max-w-2xl mx-auto font-normal leading-relaxed px-1">
               Manage group contributions, track payments and organize rotational payouts with a transparent
               savings management platform built for modern savings groups.
             </p>
 
             {/* Primary Action Group */}
-            <div className="pt-4 flex flex-col sm:flex-row items-center justify-center gap-4">
+            <div className="pt-2 sm:pt-4 flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4 max-w-md sm:max-w-none mx-auto w-full">
               <Link
                 href="/login"
-                className="w-full sm:w-auto inline-flex items-center justify-center gap-2.5 px-8 py-4 rounded-full text-base font-semibold text-white bg-[#087F5B] hover:bg-[#066849] shadow-lg shadow-[#087F5B]/25 hover:shadow-xl hover:shadow-[#087F5B]/30 transition-all transform hover:-translate-y-0.5 focus:outline-none focus:ring-4 focus:ring-[#087F5B]/30"
+                className="w-full sm:w-auto inline-flex items-center justify-center gap-2.5 px-7 py-3.5 sm:px-8 sm:py-4 rounded-full text-sm sm:text-base font-semibold text-white bg-[#087F5B] hover:bg-[#066849] shadow-lg shadow-[#087F5B]/25 hover:shadow-xl hover:shadow-[#087F5B]/30 transition-all transform hover:-translate-y-0.5 focus:outline-none focus:ring-4 focus:ring-[#087F5B]/30"
               >
                 <span>Get Started</span>
-                <ArrowRight className="w-5 h-5" />
+                <ArrowRight className="w-4 h-4 sm:w-5 sm:h-5" />
               </Link>
               <a
                 href="#features"
-                className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-7 py-4 rounded-full text-base font-semibold text-[#102A43] bg-white border border-[#CBD5E1] hover:bg-[#F8FAFC] transition-colors shadow-sm"
+                className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-3.5 sm:px-7 sm:py-4 rounded-full text-sm sm:text-base font-semibold text-[#102A43] bg-white border border-[#CBD5E1] hover:bg-[#F8FAFC] transition-colors shadow-sm"
               >
                 <span>Explore Features</span>
                 <ChevronDown className="w-4 h-4 text-[#64748B]" />
@@ -242,30 +251,30 @@ export default function LandingPage() {
             </div>
 
             {/* Verified Trust Badges */}
-            <div className="pt-6 flex flex-wrap items-center justify-center gap-x-8 gap-y-3 text-xs font-semibold text-[#64748B]">
-              <div className="flex items-center gap-1.5">
-                <CheckCircle2 className="w-4 h-4 text-[#087F5B]" />
+            <div className="pt-4 sm:pt-6 grid grid-cols-1 sm:grid-cols-2 lg:flex lg:flex-wrap items-center justify-center gap-x-6 sm:gap-x-8 gap-y-2 sm:gap-y-2.5 text-xs font-semibold text-[#64748B] max-w-xl mx-auto">
+              <div className="flex items-center justify-center sm:justify-start gap-1.5">
+                <CheckCircle2 className="w-4 h-4 text-[#087F5B] shrink-0" />
                 <span>Organized Contributions</span>
               </div>
-              <div className="flex items-center gap-1.5">
-                <CheckCircle2 className="w-4 h-4 text-[#087F5B]" />
+              <div className="flex items-center justify-center sm:justify-start gap-1.5">
+                <CheckCircle2 className="w-4 h-4 text-[#087F5B] shrink-0" />
                 <span>Transparent Payment Tracking</span>
               </div>
-              <div className="flex items-center gap-1.5">
-                <CheckCircle2 className="w-4 h-4 text-[#087F5B]" />
+              <div className="flex items-center justify-center sm:justify-start gap-1.5">
+                <CheckCircle2 className="w-4 h-4 text-[#087F5B] shrink-0" />
                 <span>Structured Payout Management</span>
               </div>
-              <div className="flex items-center gap-1.5">
-                <CheckCircle2 className="w-4 h-4 text-[#087F5B]" />
+              <div className="flex items-center justify-center sm:justify-start gap-1.5">
+                <CheckCircle2 className="w-4 h-4 text-[#087F5B] shrink-0" />
                 <span>Downloadable Financial Records</span>
               </div>
             </div>
           </div>
 
           {/* ─── CINEMATIC HERO VISUAL WITH AUTHENTIC GHANAIAN GROUP ─── */}
-          <div className="mt-12 max-w-5xl mx-auto relative">
-            <div className="relative rounded-3xl overflow-hidden shadow-2xl border border-[#E2E8F0] bg-[#102A43]">
-              <div className="relative h-[340px] sm:h-[480px] md:h-[560px] w-full">
+          <div className="mt-10 sm:mt-12 max-w-5xl mx-auto relative">
+            <div className="relative rounded-2xl sm:rounded-3xl overflow-hidden shadow-xl sm:shadow-2xl border border-[#E2E8F0] bg-[#102A43]">
+              <div className="relative h-[280px] xs:h-[320px] sm:h-[440px] md:h-[540px] w-full">
                 <Image
                   src="/images/hero-ghana-finance.jpg"
                   alt="Ghanaian rotating group savings club members reviewing ledger contributions and cash payouts"
@@ -278,42 +287,42 @@ export default function LandingPage() {
                 <div className="absolute inset-0 bg-gradient-to-r from-[#102A43]/25 via-transparent to-transparent" />
 
                 {/* Floating Micro-Badge Top Left: Payment Verified */}
-                <div className="absolute top-4 left-4 sm:top-6 sm:left-6 backdrop-blur-md bg-white/95 border border-white/60 p-3 sm:p-4 rounded-2xl shadow-xl flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-xl bg-[#E6F4EF] flex items-center justify-center text-[#087F5B] font-bold">
-                    <Smartphone className="w-5 h-5" />
+                <div className="absolute top-3 left-3 sm:top-6 sm:left-6 backdrop-blur-md bg-white/95 border border-white/60 p-2 sm:p-4 rounded-xl sm:rounded-2xl shadow-xl flex items-center gap-2 sm:gap-3 max-w-[200px] xs:max-w-none">
+                  <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-lg sm:rounded-xl bg-[#E6F4EF] flex items-center justify-center text-[#087F5B] font-bold shrink-0">
+                    <Smartphone className="w-4 h-4 sm:w-5 sm:h-5" />
                   </div>
-                  <div>
-                    <div className="flex items-center gap-1.5">
-                      <span className="text-xs font-bold text-[#102A43]">Payment Recorded</span>
-                      <CheckCircle2 className="w-3.5 h-3.5 text-[#087F5B]" />
+                  <div className="min-w-0">
+                    <div className="flex items-center gap-1">
+                      <span className="text-[11px] sm:text-xs font-bold text-[#102A43] truncate">Payment Recorded</span>
+                      <CheckCircle2 className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-[#087F5B] shrink-0" />
                     </div>
-                    <p className="text-[11px] font-semibold text-[#087F5B]">
-                      + GH₵ 250.00 <span className="text-[#64748B] font-normal">• Kwesi Arthur (Position 2)</span>
+                    <p className="text-[10px] sm:text-[11px] font-semibold text-[#087F5B] truncate">
+                      + GH₵ 250.00 <span className="text-[#64748B] font-normal hidden xs:inline">• Kwesi Arthur (Pos 2)</span>
                     </p>
                   </div>
                 </div>
 
                 {/* Floating Micro-Badge Bottom Right: Next Scheduled Payout */}
-                <div className="absolute bottom-4 right-4 sm:bottom-6 sm:right-6 backdrop-blur-md bg-[#102A43]/90 text-white border border-white/15 p-3.5 sm:p-4 rounded-2xl shadow-xl space-y-1.5 max-w-[280px] sm:max-w-none">
-                  <div className="flex items-center justify-between gap-4">
-                    <span className="text-[10px] font-semibold uppercase tracking-wider text-emerald-300">
+                <div className="absolute bottom-3 right-3 sm:bottom-6 sm:right-6 backdrop-blur-md bg-[#102A43]/90 text-white border border-white/15 p-2 sm:p-4 rounded-xl sm:rounded-2xl shadow-xl space-y-1 sm:space-y-1.5 max-w-[190px] xs:max-w-[260px] sm:max-w-none">
+                  <div className="flex items-center justify-between gap-2">
+                    <span className="text-[9px] sm:text-[10px] font-semibold uppercase tracking-wider text-emerald-300">
                       NEXT BENEFICIARY
                     </span>
-                    <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-emerald-500/20 text-emerald-300">
-                      POSITION 1
+                    <span className="text-[8px] sm:text-[10px] font-bold px-1.5 py-0.5 rounded bg-emerald-500/20 text-emerald-300">
+                      POS 1
                     </span>
                   </div>
-                  <div className="text-sm font-extrabold text-white flex items-center gap-2">
-                    <span>Ama Mensah</span>
-                    <span className="text-emerald-400 font-mono">GH₵ 1,000.00</span>
+                  <div className="text-xs sm:text-sm font-extrabold text-white flex items-center gap-2">
+                    <span className="truncate">Ama Mensah</span>
+                    <span className="text-emerald-400 font-mono shrink-0">GH₵ 1,000.00</span>
                   </div>
-                  <p className="text-[10px] text-slate-300">
-                    4/4 member contributions received • Ready for disbursement
+                  <p className="text-[9px] sm:text-[10px] text-slate-300 hidden xs:block">
+                    4/4 contributions received • Ready for payout
                   </p>
                 </div>
 
                 {/* Bottom Left Pill: Accurate Record Protection */}
-                <div className="hidden sm:inline-flex absolute bottom-6 left-6 backdrop-blur-md bg-white/90 border border-white/40 px-3.5 py-2 rounded-full items-center gap-2 text-xs font-semibold text-[#102A43] shadow-md">
+                <div className="hidden md:inline-flex absolute bottom-6 left-6 backdrop-blur-md bg-white/90 border border-white/40 px-3.5 py-2 rounded-full items-center gap-2 text-xs font-semibold text-[#102A43] shadow-md">
                   <ShieldCheck className="w-4 h-4 text-[#087F5B]" />
                   <span>Verified Financial Records • Accurate Pesewa Accounting</span>
                 </div>
@@ -322,28 +331,28 @@ export default function LandingPage() {
           </div>
 
           {/* ─── REALISTIC PRODUCT PREVIEW CARD ────────────────────────────── */}
-          <div className="mt-14 max-w-5xl mx-auto">
-            <div className="rounded-3xl bg-white border border-[#E2E8F0] shadow-xl overflow-hidden">
+          <div className="mt-10 sm:mt-14 max-w-5xl mx-auto w-full min-w-0">
+            <div className="rounded-2xl sm:rounded-3xl bg-white border border-[#E2E8F0] shadow-xl overflow-hidden w-full min-w-0">
               {/* Card Header Strip */}
-              <div className="bg-[#102A43] px-6 py-4 flex flex-wrap items-center justify-between gap-4 text-white">
-                <div className="flex items-center gap-3">
-                  <div className="w-3 h-3 rounded-full bg-[#087F5B] ring-4 ring-[#087F5B]/30" />
-                  <span className="font-semibold text-sm tracking-wide">SAVINGS CYCLE OVERVIEW • ACTIVE ROTATION</span>
+              <div className="bg-[#102A43] px-4 sm:px-6 py-3.5 sm:py-4 flex flex-wrap items-center justify-between gap-3 text-white">
+                <div className="flex items-center gap-2.5 sm:gap-3">
+                  <div className="w-2.5 h-2.5 sm:w-3 sm:h-3 rounded-full bg-[#087F5B] ring-4 ring-[#087F5B]/30" />
+                  <span className="font-semibold text-xs sm:text-sm tracking-wide">SAVINGS CYCLE OVERVIEW • ACTIVE ROTATION</span>
                   <span className="hidden sm:inline-block px-2 py-0.5 text-[10px] font-medium tracking-wider bg-white/10 rounded uppercase">
                     Cycle 1
                   </span>
                 </div>
-                <div className="flex items-center gap-2 text-xs font-medium text-emerald-300">
-                  <CheckCircle2 className="w-3.5 h-3.5" />
+                <div className="flex items-center gap-1.5 sm:gap-2 text-[11px] sm:text-xs font-medium text-emerald-300">
+                  <CheckCircle2 className="w-3.5 h-3.5 shrink-0" />
                   <span>Cycle Status: Fully Reconciled &amp; On Track</span>
                 </div>
               </div>
 
               {/* Interactive Tabs */}
-              <div className="border-b border-[#E2E8F0] bg-[#F8FAFC] px-6 flex flex-wrap items-center gap-2 pt-2">
+              <div className="border-b border-[#E2E8F0] bg-[#F8FAFC] px-3 sm:px-6 flex items-center gap-1 sm:gap-2 pt-2 overflow-x-auto whitespace-nowrap scrollbar-none">
                 <button
                   onClick={() => setActiveTab("summary")}
-                  className={`px-4 py-2.5 text-xs font-bold uppercase tracking-wider rounded-t-lg transition-colors ${
+                  className={`px-3 sm:px-4 py-2 sm:py-2.5 text-[11px] sm:text-xs font-bold uppercase tracking-wider rounded-t-lg transition-colors shrink-0 ${
                     activeTab === "summary"
                       ? "bg-white text-[#102A43] border-t-2 border-x border-[#E2E8F0] border-t-[#087F5B] -mb-px"
                       : "text-[#64748B] hover:text-[#102A43]"
@@ -353,7 +362,7 @@ export default function LandingPage() {
                 </button>
                 <button
                   onClick={() => setActiveTab("contributions")}
-                  className={`px-4 py-2.5 text-xs font-bold uppercase tracking-wider rounded-t-lg transition-colors ${
+                  className={`px-3 sm:px-4 py-2 sm:py-2.5 text-[11px] sm:text-xs font-bold uppercase tracking-wider rounded-t-lg transition-colors shrink-0 ${
                     activeTab === "contributions"
                       ? "bg-white text-[#102A43] border-t-2 border-x border-[#E2E8F0] border-t-[#087F5B] -mb-px"
                       : "text-[#64748B] hover:text-[#102A43]"
@@ -363,7 +372,7 @@ export default function LandingPage() {
                 </button>
                 <button
                   onClick={() => setActiveTab("rotations")}
-                  className={`px-4 py-2.5 text-xs font-bold uppercase tracking-wider rounded-t-lg transition-colors ${
+                  className={`px-3 sm:px-4 py-2 sm:py-2.5 text-[11px] sm:text-xs font-bold uppercase tracking-wider rounded-t-lg transition-colors shrink-0 ${
                     activeTab === "rotations"
                       ? "bg-white text-[#102A43] border-t-2 border-x border-[#E2E8F0] border-t-[#087F5B] -mb-px"
                       : "text-[#64748B] hover:text-[#102A43]"
@@ -373,7 +382,7 @@ export default function LandingPage() {
                 </button>
                 <button
                   onClick={() => setActiveTab("receipts")}
-                  className={`px-4 py-2.5 text-xs font-bold uppercase tracking-wider rounded-t-lg transition-colors ${
+                  className={`px-3 sm:px-4 py-2 sm:py-2.5 text-[11px] sm:text-xs font-bold uppercase tracking-wider rounded-t-lg transition-colors shrink-0 ${
                     activeTab === "receipts"
                       ? "bg-white text-[#102A43] border-t-2 border-x border-[#E2E8F0] border-t-[#087F5B] -mb-px"
                       : "text-[#64748B] hover:text-[#102A43]"
@@ -384,17 +393,17 @@ export default function LandingPage() {
               </div>
 
               {/* Tab Contents */}
-              <div className="p-6 sm:p-8">
+              <div className="p-4 sm:p-8">
                 {activeTab === "summary" && (
                   <div className="space-y-6">
                     {/* Financial Summary Cards */}
-                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-3.5 sm:gap-4">
                       <div className="p-4 rounded-2xl bg-[#E6F4EF] border border-[#A3E0CE]">
                         <span className="text-xs font-bold text-[#066849] uppercase tracking-wider">
                           Collected This Period
                         </span>
                         <div className="mt-1 flex items-baseline justify-between">
-                          <span className="text-2xl font-extrabold text-[#102A43]">GH₵ 1,000.00</span>
+                          <span className="text-xl sm:text-2xl font-extrabold text-[#102A43]">GH₵ 1,000.00</span>
                           <span className="text-xs font-semibold text-[#066849]">100% RECEIVED</span>
                         </div>
                         <p className="mt-1 text-[11px] text-[#066849]">4 of 4 members contributed</p>
@@ -405,7 +414,7 @@ export default function LandingPage() {
                           Outstanding Balances
                         </span>
                         <div className="mt-1 flex items-baseline justify-between">
-                          <span className="text-2xl font-extrabold text-[#102A43]">GH₵ 0.00</span>
+                          <span className="text-xl sm:text-2xl font-extrabold text-[#102A43]">GH₵ 0.00</span>
                           <span className="text-xs font-semibold text-[#64748B]">RESOLVED</span>
                         </div>
                         <p className="mt-1 text-[11px] text-[#64748B]">Zero overdue payments</p>
@@ -416,7 +425,7 @@ export default function LandingPage() {
                           Scheduled Period Payout
                         </span>
                         <div className="mt-1 flex items-baseline justify-between">
-                          <span className="text-2xl font-extrabold text-[#102A43]">GH₵ 1,000.00</span>
+                          <span className="text-xl sm:text-2xl font-extrabold text-[#102A43]">GH₵ 1,000.00</span>
                           <span className="text-xs font-semibold text-[#1D4ED8]">READY</span>
                         </div>
                         <p className="mt-1 text-[11px] text-[#1D4ED8]">Disbursable to Beneficiary 1</p>
@@ -432,7 +441,7 @@ export default function LandingPage() {
                       <div className="w-full bg-[#E2E8F0] rounded-full h-2.5 overflow-hidden">
                         <div className="bg-[#087F5B] h-2.5 rounded-full" style={{ width: "25%" }} />
                       </div>
-                      <div className="flex items-center justify-between text-[11px] text-[#64748B]">
+                      <div className="flex flex-col sm:flex-row sm:items-center justify-between text-[11px] text-[#64748B] gap-1">
                         <span>Each member contributes GH₵ 250.00 per month</span>
                         <span>Total pooled pool: GH₵ 4,000.00 across 4 rounds</span>
                       </div>
@@ -443,7 +452,7 @@ export default function LandingPage() {
                 {activeTab === "contributions" && (
                   <div className="space-y-4">
                     <div className="overflow-x-auto rounded-xl border border-[#E2E8F0]">
-                      <table className="w-full text-left text-xs">
+                      <table className="w-full text-left text-xs min-w-[500px]">
                         <thead className="bg-[#102A43] text-white">
                           <tr>
                             <th className="py-2.5 px-4 font-semibold">MEMBER</th>
@@ -509,7 +518,7 @@ export default function LandingPage() {
 
                 {activeTab === "rotations" && (
                   <div className="space-y-4">
-                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3.5 sm:gap-4">
                       {[
                         {
                           pos: "Turn 1 • Month 1",
@@ -564,13 +573,13 @@ export default function LandingPage() {
                 )}
 
                 {activeTab === "receipts" && (
-                  <div className="bg-[#F8FAFC] p-6 rounded-2xl border border-[#E2E8F0] flex flex-col md:flex-row items-center justify-between gap-6">
-                    <div className="space-y-2">
+                  <div className="bg-[#F8FAFC] p-4 sm:p-6 rounded-2xl border border-[#E2E8F0] flex flex-col md:flex-row items-center justify-between gap-6">
+                    <div className="space-y-2 w-full md:w-auto">
                       <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-bold bg-[#E6F4EF] text-[#066849]">
-                        <Receipt className="w-3.5 h-3.5" />
+                        <Receipt className="w-3.5 h-3.5 shrink-0" />
                         <span>OFFICIAL DIGITAL RECEIPT • VERIFIED</span>
                       </div>
-                      <h4 className="text-xl font-bold text-[#102A43]">GH₵ 250.00 Contribution Received</h4>
+                      <h4 className="text-lg sm:text-xl font-bold text-[#102A43]">GH₵ 250.00 Contribution Received</h4>
                       <p className="text-xs text-[#64748B]">
                         Member: <span className="font-semibold text-[#334155]">Kwesi Arthur</span> • Period 1 of 4
                       </p>
@@ -585,10 +594,10 @@ export default function LandingPage() {
                         <span className="font-mono text-[#102A43]">TXN-MM-984210</span>
                       </p>
                     </div>
-                    <div className="flex flex-col sm:flex-row gap-3">
+                    <div className="flex flex-col sm:flex-row gap-3 w-full md:w-auto">
                       <Link
                         href="/login"
-                        className="inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-full text-xs font-semibold text-white bg-[#102A43] hover:bg-[#1E3A5F] transition-colors shadow-sm"
+                        className="inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-full text-xs font-semibold text-white bg-[#102A43] hover:bg-[#1E3A5F] transition-colors shadow-sm w-full sm:w-auto"
                       >
                         <FileText className="w-4 h-4 text-[#087F5B]" />
                         <span>Generate &amp; Download PDF</span>
@@ -603,173 +612,173 @@ export default function LandingPage() {
       </section>
 
       {/* ─── TRUST INDICATORS & KEY BENEFITS STRIP ───────────────────────────── */}
-      <section className="bg-white border-y border-[#E2E8F0] py-12">
+      <section className="bg-white border-y border-[#E2E8F0] py-10 sm:py-12">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-8 text-center divide-y sm:divide-y-0 sm:divide-x divide-[#E2E8F0]">
-            <div className="pt-4 sm:pt-0">
-              <span className="block text-3xl sm:text-4xl font-extrabold text-[#102A43] tracking-tight">
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-8 text-center">
+            <div className="p-4 sm:p-0 rounded-2xl bg-[#F8FAFC] sm:bg-transparent border border-[#E2E8F0] sm:border-0 sm:border-r sm:border-[#E2E8F0] sm:last:border-0">
+              <span className="block text-2xl sm:text-4xl font-extrabold text-[#102A43] tracking-tight">
                 100%
               </span>
-              <span className="block mt-1 text-xs font-semibold text-[#087F5B] uppercase tracking-wider">
+              <span className="block mt-1 text-[11px] sm:text-xs font-semibold text-[#087F5B] uppercase tracking-wider">
                 Accurate Financial Records
               </span>
-              <p className="mt-1 text-xs text-[#64748B]">Exact Ghana Cedi and pesewa calculations</p>
+              <p className="mt-1 text-[11px] sm:text-xs text-[#64748B]">Exact Ghana Cedi &amp; pesewa calculations</p>
             </div>
 
-            <div className="pt-4 sm:pt-0">
-              <span className="block text-3xl sm:text-4xl font-extrabold text-[#102A43] tracking-tight">
+            <div className="p-4 sm:p-0 rounded-2xl bg-[#F8FAFC] sm:bg-transparent border border-[#E2E8F0] sm:border-0 sm:border-r sm:border-[#E2E8F0] sm:last:border-0">
+              <span className="block text-2xl sm:text-4xl font-extrabold text-[#102A43] tracking-tight">
                 6 Channels
               </span>
-              <span className="block mt-1 text-xs font-semibold text-[#087F5B] uppercase tracking-wider">
+              <span className="block mt-1 text-[11px] sm:text-xs font-semibold text-[#087F5B] uppercase tracking-wider">
                 Payment Method Tracking
               </span>
-              <p className="mt-1 text-xs text-[#64748B]">Cash, Mobile Money &amp; Bank Transfer logs</p>
+              <p className="mt-1 text-[11px] sm:text-xs text-[#64748B]">Cash, Mobile Money &amp; Bank Transfer logs</p>
             </div>
 
-            <div className="pt-4 sm:pt-0">
-              <span className="block text-3xl sm:text-4xl font-extrabold text-[#102A43] tracking-tight">
+            <div className="p-4 sm:p-0 rounded-2xl bg-[#F8FAFC] sm:bg-transparent border border-[#E2E8F0] sm:border-0 sm:border-r sm:border-[#E2E8F0] sm:last:border-0">
+              <span className="block text-2xl sm:text-4xl font-extrabold text-[#102A43] tracking-tight">
                 Flexible
               </span>
-              <span className="block mt-1 text-xs font-semibold text-[#087F5B] uppercase tracking-wider">
+              <span className="block mt-1 text-[11px] sm:text-xs font-semibold text-[#087F5B] uppercase tracking-wider">
                 Custom Deadlines
               </span>
-              <p className="mt-1 text-xs text-[#64748B]">Configurable contribution schedules</p>
+              <p className="mt-1 text-[11px] sm:text-xs text-[#64748B]">Configurable contribution schedules</p>
             </div>
 
-            <div className="pt-4 sm:pt-0">
-              <span className="block text-3xl sm:text-4xl font-extrabold text-[#102A43] tracking-tight">
+            <div className="p-4 sm:p-0 rounded-2xl bg-[#F8FAFC] sm:bg-transparent border border-[#E2E8F0] sm:border-0">
+              <span className="block text-2xl sm:text-4xl font-extrabold text-[#102A43] tracking-tight">
                 Official
               </span>
-              <span className="block mt-1 text-xs font-semibold text-[#087F5B] uppercase tracking-wider">
+              <span className="block mt-1 text-[11px] sm:text-xs font-semibold text-[#087F5B] uppercase tracking-wider">
                 Digital PDF Receipts
               </span>
-              <p className="mt-1 text-xs text-[#64748B]">Instant verification for every payment</p>
+              <p className="mt-1 text-[11px] sm:text-xs text-[#64748B]">Instant verification for every payment</p>
             </div>
           </div>
         </div>
       </section>
 
       {/* ─── CORE FEATURES (6 VISUALLY CONSISTENT CARDS) ────────────────────── */}
-      <section id="features" className="py-20 md:py-28 bg-[#F5F7FA]">
+      <section id="features" className="py-16 sm:py-24 lg:py-28 bg-[#F5F7FA]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center max-w-3xl mx-auto space-y-4">
+          <div className="text-center max-w-3xl mx-auto space-y-3.5 sm:space-y-4">
             <span className="inline-block text-xs font-bold uppercase tracking-wider text-[#087F5B] bg-[#E6F4EF] px-3.5 py-1 rounded-full border border-[#A3E0CE]">
               Core Capabilities
             </span>
-            <h2 className="text-3xl sm:text-4xl font-extrabold text-[#102A43] tracking-tight">
+            <h2 className="text-2xl sm:text-4xl font-extrabold text-[#102A43] tracking-tight">
               Everything Your Savings Group Needs to Succeed
             </h2>
-            <p className="text-base text-[#334155] leading-relaxed">
+            <p className="text-sm sm:text-base text-[#334155] leading-relaxed">
               Designed specifically to solve the real challenges of group savings: eliminating disputed payments,
               tracking deadlines, and keeping every member on the same page.
             </p>
           </div>
 
-          <div className="mt-16 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          <div className="mt-12 sm:mt-16 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
             {/* Feature 1 */}
-            <div className="p-8 rounded-3xl bg-white border border-[#E2E8F0] shadow-sm hover:shadow-md transition-all flex flex-col justify-between space-y-4">
+            <div className="p-6 sm:p-8 rounded-3xl bg-white border border-[#E2E8F0] shadow-sm hover:shadow-md transition-all flex flex-col justify-between space-y-4">
               <div className="space-y-4">
                 <div className="w-12 h-12 rounded-2xl bg-[#E6F4EF] text-[#087F5B] flex items-center justify-center font-bold">
                   <Users className="w-6 h-6" />
                 </div>
-                <h3 className="text-xl font-bold text-[#102A43]">Group &amp; Member Management</h3>
+                <h3 className="text-lg sm:text-xl font-bold text-[#102A43]">Group &amp; Member Management</h3>
                 <p className="text-sm text-[#334155] leading-relaxed">
                   Easily configure group capacity, register active members with verified phone numbers, and assign
                   transparent rotation payout positions with clear membership statuses.
                 </p>
               </div>
               <div className="pt-2 flex items-center gap-1.5 text-xs font-semibold text-[#087F5B]">
-                <CheckCircle2 className="w-4 h-4" />
+                <CheckCircle2 className="w-4 h-4 shrink-0" />
                 <span>Configurable group sizes &amp; contact directories</span>
               </div>
             </div>
 
             {/* Feature 2 */}
-            <div className="p-8 rounded-3xl bg-white border border-[#E2E8F0] shadow-sm hover:shadow-md transition-all flex flex-col justify-between space-y-4">
+            <div className="p-6 sm:p-8 rounded-3xl bg-white border border-[#E2E8F0] shadow-sm hover:shadow-md transition-all flex flex-col justify-between space-y-4">
               <div className="space-y-4">
                 <div className="w-12 h-12 rounded-2xl bg-[#EFF6FF] text-[#1D4ED8] flex items-center justify-center font-bold">
                   <Calendar className="w-6 h-6" />
                 </div>
-                <h3 className="text-xl font-bold text-[#102A43]">Contribution Management</h3>
+                <h3 className="text-lg sm:text-xl font-bold text-[#102A43]">Contribution Management</h3>
                 <p className="text-sm text-[#334155] leading-relaxed">
                   Set standard contribution amounts per cycle period, customize due dates to fit member paydays, and
                   instantly identify who has paid, who paid partially, and who is pending.
                 </p>
               </div>
               <div className="pt-2 flex items-center gap-1.5 text-xs font-semibold text-[#1D4ED8]">
-                <CheckCircle2 className="w-4 h-4" />
+                <CheckCircle2 className="w-4 h-4 shrink-0" />
                 <span>Custom deadlines &amp; automatic status tracking</span>
               </div>
             </div>
 
             {/* Feature 3 */}
-            <div className="p-8 rounded-3xl bg-white border border-[#E2E8F0] shadow-sm hover:shadow-md transition-all flex flex-col justify-between space-y-4">
+            <div className="p-6 sm:p-8 rounded-3xl bg-white border border-[#E2E8F0] shadow-sm hover:shadow-md transition-all flex flex-col justify-between space-y-4">
               <div className="space-y-4">
                 <div className="w-12 h-12 rounded-2xl bg-[#FFF4E5] text-[#92400E] flex items-center justify-center font-bold">
                   <CreditCard className="w-6 h-6" />
                 </div>
-                <h3 className="text-xl font-bold text-[#102A43]">Payment Tracking</h3>
+                <h3 className="text-lg sm:text-xl font-bold text-[#102A43]">Payment Tracking</h3>
                 <p className="text-sm text-[#334155] leading-relaxed">
                   Record payments received across Cash, MTN Mobile Money, Telecel Cash, AT Money, and Bank Transfers.
                   Log transaction reference numbers and admin verification for clean records.
                 </p>
               </div>
               <div className="pt-2 flex items-center gap-1.5 text-xs font-semibold text-[#92400E]">
-                <CheckCircle2 className="w-4 h-4" />
+                <CheckCircle2 className="w-4 h-4 shrink-0" />
                 <span>Supports 6 Ghanaian payment methods with reference tracking</span>
               </div>
             </div>
 
             {/* Feature 4 */}
-            <div className="p-8 rounded-3xl bg-white border border-[#E2E8F0] shadow-sm hover:shadow-md transition-all flex flex-col justify-between space-y-4">
+            <div className="p-6 sm:p-8 rounded-3xl bg-white border border-[#E2E8F0] shadow-sm hover:shadow-md transition-all flex flex-col justify-between space-y-4">
               <div className="space-y-4">
                 <div className="w-12 h-12 rounded-2xl bg-[#E6F4EF] text-[#087F5B] flex items-center justify-center font-bold">
                   <UserCheck className="w-6 h-6" />
                 </div>
-                <h3 className="text-xl font-bold text-[#102A43]">Rotation &amp; Payout Management</h3>
+                <h3 className="text-lg sm:text-xl font-bold text-[#102A43]">Rotation &amp; Payout Management</h3>
                 <p className="text-sm text-[#334155] leading-relaxed">
                   Organize scheduled payouts according to the group rotation. Authorize disbursements once period
                   contributions are pooled, and record beneficiary acknowledgments with complete date stamps.
                 </p>
               </div>
               <div className="pt-2 flex items-center gap-1.5 text-xs font-semibold text-[#087F5B]">
-                <CheckCircle2 className="w-4 h-4" />
+                <CheckCircle2 className="w-4 h-4 shrink-0" />
                 <span>Fair rotation queues &amp; disbursement confirmation</span>
               </div>
             </div>
 
             {/* Feature 5 */}
-            <div className="p-8 rounded-3xl bg-white border border-[#E2E8F0] shadow-sm hover:shadow-md transition-all flex flex-col justify-between space-y-4">
+            <div className="p-6 sm:p-8 rounded-3xl bg-white border border-[#E2E8F0] shadow-sm hover:shadow-md transition-all flex flex-col justify-between space-y-4">
               <div className="space-y-4">
                 <div className="w-12 h-12 rounded-2xl bg-[#EFF6FF] text-[#1D4ED8] flex items-center justify-center font-bold">
                   <Receipt className="w-6 h-6" />
                 </div>
-                <h3 className="text-xl font-bold text-[#102A43]">Financial Reports &amp; Digital Receipts</h3>
+                <h3 className="text-lg sm:text-xl font-bold text-[#102A43]">Financial Reports &amp; Digital Receipts</h3>
                 <p className="text-sm text-[#334155] leading-relaxed">
                   Instantly issue official digital receipts for every member payment. Generate cycle summary reports and
                   download PDF documentation featuring exact figures and formal currency words.
                 </p>
               </div>
               <div className="pt-2 flex items-center gap-1.5 text-xs font-semibold text-[#1D4ED8]">
-                <CheckCircle2 className="w-4 h-4" />
+                <CheckCircle2 className="w-4 h-4 shrink-0" />
                 <span>Downloadable PDF receipts &amp; period statements</span>
               </div>
             </div>
 
             {/* Feature 6 */}
-            <div className="p-8 rounded-3xl bg-white border border-[#E2E8F0] shadow-sm hover:shadow-md transition-all flex flex-col justify-between space-y-4">
+            <div className="p-6 sm:p-8 rounded-3xl bg-white border border-[#E2E8F0] shadow-sm hover:shadow-md transition-all flex flex-col justify-between space-y-4">
               <div className="space-y-4">
                 <div className="w-12 h-12 rounded-2xl bg-[#F8FAFC] text-[#102A43] border border-[#CBD5E1] flex items-center justify-center font-bold">
                   <Building2 className="w-6 h-6" />
                 </div>
-                <h3 className="text-xl font-bold text-[#102A43]">Administrative Oversight</h3>
+                <h3 className="text-lg sm:text-xl font-bold text-[#102A43]">Administrative Oversight</h3>
                 <p className="text-sm text-[#334155] leading-relaxed">
                   Maintain an orderly financial history. Review outstanding contributions, handle payment adjustments,
                   and ensure the cycle is fully completed and reconciled before initiating the next round.
                 </p>
               </div>
               <div className="pt-2 flex items-center gap-1.5 text-xs font-semibold text-[#102A43]">
-                <CheckCircle2 className="w-4 h-4" />
+                <CheckCircle2 className="w-4 h-4 shrink-0" />
                 <span>Reconciled cycle closing &amp; comprehensive activity history</span>
               </div>
             </div>
@@ -778,21 +787,21 @@ export default function LandingPage() {
       </section>
 
       {/* ─── HOW IT WORKS (SIMPLE 4-STEP PROCESS) ────────────────────────────── */}
-      <section id="how-it-works" className="py-20 md:py-28 bg-white border-t border-[#E2E8F0]">
+      <section id="how-it-works" className="py-16 sm:py-24 lg:py-28 bg-white border-t border-[#E2E8F0]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center max-w-3xl mx-auto space-y-4">
+          <div className="text-center max-w-3xl mx-auto space-y-3.5 sm:space-y-4">
             <span className="inline-block text-xs font-bold uppercase tracking-wider text-[#087F5B] bg-[#E6F4EF] px-3.5 py-1 rounded-full border border-[#A3E0CE]">
               Simple Process
             </span>
-            <h2 className="text-3xl sm:text-4xl font-extrabold text-[#102A43] tracking-tight">
+            <h2 className="text-2xl sm:text-4xl font-extrabold text-[#102A43] tracking-tight">
               How RSCMS Works for Your Savings Group
             </h2>
-            <p className="text-base text-[#334155] leading-relaxed">
+            <p className="text-sm sm:text-base text-[#334155] leading-relaxed">
               From group setup to final payout reconciliation, RSCMS provides a structured, stress-free workflow.
             </p>
           </div>
 
-          <div className="mt-16 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+          <div className="mt-12 sm:mt-16 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8">
             {[
               {
                 step: "01",
@@ -819,8 +828,8 @@ export default function LandingPage() {
                 key={idx}
                 className="relative p-6 rounded-3xl bg-[#F8FAFC] border border-[#E2E8F0] shadow-sm hover:shadow-md transition-shadow space-y-3"
               >
-                <span className="block text-4xl font-black text-[#087F5B]/25 font-mono">{step.step}</span>
-                <h3 className="text-lg font-bold text-[#102A43]">{step.title}</h3>
+                <span className="block text-3xl sm:text-4xl font-black text-[#087F5B]/25 font-mono">{step.step}</span>
+                <h3 className="text-base sm:text-lg font-bold text-[#102A43]">{step.title}</h3>
                 <p className="text-xs text-[#334155] leading-relaxed">{step.desc}</p>
               </div>
             ))}
@@ -829,18 +838,18 @@ export default function LandingPage() {
       </section>
 
       {/* ─── TRANSPARENCY & ACCOUNTABILITY ───────────────────────────────────── */}
-      <section id="transparency" className="py-20 md:py-28 bg-[#F5F7FA] border-t border-[#E2E8F0]">
+      <section id="transparency" className="py-16 sm:py-24 lg:py-28 bg-[#F5F7FA] border-t border-[#E2E8F0]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-12 items-center">
             <div className="space-y-6">
               <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full text-xs font-bold bg-[#E6F4EF] text-[#066849]">
-                <Sparkles className="w-4 h-4" />
+                <Sparkles className="w-4 h-4 shrink-0" />
                 <span>TRANSPARENCY &amp; ACCOUNTABILITY</span>
               </div>
-              <h2 className="text-3xl sm:text-4xl font-extrabold text-[#102A43] tracking-tight leading-tight">
+              <h2 className="text-2xl sm:text-4xl font-extrabold text-[#102A43] tracking-tight leading-tight">
                 Clear Records That Every Member Can Trust
               </h2>
-              <p className="text-base text-[#334155] leading-relaxed">
+              <p className="text-sm sm:text-base text-[#334155] leading-relaxed">
                 Trust is the foundation of every successful savings group. RSCMS replaces informal WhatsApp lists and paper
                 notebooks with verified, objective financial records that protect both administrators and members.
               </p>
@@ -896,7 +905,7 @@ export default function LandingPage() {
               </div>
             </div>
 
-            <div className="rounded-3xl bg-[#102A43] p-8 text-white shadow-xl space-y-6">
+            <div className="rounded-3xl bg-[#102A43] p-6 sm:p-8 text-white shadow-xl space-y-6">
               <div className="flex items-center justify-between border-b border-white/10 pb-4">
                 <div>
                   <h4 className="text-base font-bold text-white">Savings Group Governance</h4>
@@ -910,7 +919,7 @@ export default function LandingPage() {
               <div className="space-y-4 text-xs">
                 <div className="p-4 rounded-2xl bg-white/5 border border-white/10 space-y-1">
                   <div className="font-bold text-emerald-300 flex items-center gap-2">
-                    <CheckCircle2 className="w-4 h-4" />
+                    <CheckCircle2 className="w-4 h-4 shrink-0" />
                     <span>Consistent Financial Records</span>
                   </div>
                   <p className="text-slate-300 leading-relaxed">
@@ -920,7 +929,7 @@ export default function LandingPage() {
 
                 <div className="p-4 rounded-2xl bg-white/5 border border-white/10 space-y-1">
                   <div className="font-bold text-emerald-300 flex items-center gap-2">
-                    <CheckCircle2 className="w-4 h-4" />
+                    <CheckCircle2 className="w-4 h-4 shrink-0" />
                     <span>Clear Administrative History</span>
                   </div>
                   <p className="text-slate-300 leading-relaxed">
@@ -930,7 +939,7 @@ export default function LandingPage() {
 
                 <div className="p-4 rounded-2xl bg-white/5 border border-white/10 space-y-1">
                   <div className="font-bold text-emerald-300 flex items-center gap-2">
-                    <CheckCircle2 className="w-4 h-4" />
+                    <CheckCircle2 className="w-4 h-4 shrink-0" />
                     <span>Non-Custodial Transparency</span>
                   </div>
                   <p className="text-slate-300 leading-relaxed">
@@ -954,30 +963,30 @@ export default function LandingPage() {
       </section>
 
       {/* ─── SECURITY & PRIVACY SECTION ──────────────────────────────────────── */}
-      <section id="security" className="py-20 bg-white border-t border-[#E2E8F0]">
+      <section id="security" className="py-16 sm:py-20 bg-white border-t border-[#E2E8F0]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="max-w-4xl mx-auto rounded-3xl bg-[#102A43] text-white p-8 sm:p-12 space-y-8 relative overflow-hidden shadow-2xl">
+          <div className="max-w-4xl mx-auto rounded-3xl bg-[#102A43] text-white p-6 sm:p-12 space-y-6 sm:space-y-8 relative overflow-hidden shadow-2xl">
             {/* Ambient accent */}
             <div className="absolute top-0 right-0 w-80 h-80 bg-[#087F5B]/15 rounded-full blur-3xl pointer-events-none" />
 
-            <div className="space-y-4">
+            <div className="space-y-3 sm:space-y-4">
               <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-bold bg-[#087F5B] text-white">
-                <ShieldCheck className="w-4 h-4" />
+                <ShieldCheck className="w-4 h-4 shrink-0" />
                 <span>SECURITY &amp; PRIVACY</span>
               </div>
-              <h2 className="text-3xl sm:text-4xl font-extrabold tracking-tight text-white">
+              <h2 className="text-2xl sm:text-4xl font-extrabold tracking-tight text-white">
                 Built with Data Protection at Its Core
               </h2>
-              <p className="text-slate-300 text-sm sm:text-base leading-relaxed">
+              <p className="text-slate-300 text-xs sm:text-base leading-relaxed">
                 We know that financial data demands confidentiality and integrity. RSCMS incorporates strong security
                 practices to protect member information, prevent unauthorized access, and preserve accurate records.
               </p>
             </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 text-xs text-slate-200">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6 text-xs text-slate-200">
               <div className="space-y-2">
                 <h4 className="font-bold text-white text-sm flex items-center gap-2">
-                  <CheckCircle2 className="w-4 h-4 text-emerald-400" />
+                  <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
                   <span>Authorized Administrator Access</span>
                 </h4>
                 <p className="text-slate-300 leading-relaxed">
@@ -988,7 +997,7 @@ export default function LandingPage() {
 
               <div className="space-y-2">
                 <h4 className="font-bold text-white text-sm flex items-center gap-2">
-                  <CheckCircle2 className="w-4 h-4 text-emerald-400" />
+                  <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
                   <span>Encrypted Communications</span>
                 </h4>
                 <p className="text-slate-300 leading-relaxed">
@@ -999,7 +1008,7 @@ export default function LandingPage() {
 
               <div className="space-y-2">
                 <h4 className="font-bold text-white text-sm flex items-center gap-2">
-                  <CheckCircle2 className="w-4 h-4 text-emerald-400" />
+                  <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
                   <span>Transparent Activity History</span>
                 </h4>
                 <p className="text-slate-300 leading-relaxed">
@@ -1010,7 +1019,7 @@ export default function LandingPage() {
 
               <div className="space-y-2">
                 <h4 className="font-bold text-white text-sm flex items-center gap-2">
-                  <CheckCircle2 className="w-4 h-4 text-emerald-400" />
+                  <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
                   <span>Member Data Privacy</span>
                 </h4>
                 <p className="text-slate-300 leading-relaxed">
@@ -1021,7 +1030,7 @@ export default function LandingPage() {
             </div>
 
             <div className="pt-4 border-t border-white/10 flex flex-col sm:flex-row items-center justify-between gap-4">
-              <div className="flex items-center gap-4 text-xs text-slate-300">
+              <div className="flex items-center gap-3 sm:gap-4 text-xs text-slate-300">
                 <Link href="/privacy" className="hover:text-white underline underline-offset-4">
                   Privacy Policy
                 </Link>
@@ -1043,21 +1052,21 @@ export default function LandingPage() {
       </section>
 
       {/* ─── FREQUENTLY ASKED QUESTIONS (ACCORDION) ─────────────────────────── */}
-      <section id="faq" className="py-20 md:py-28 bg-[#F5F7FA] border-t border-[#E2E8F0]">
+      <section id="faq" className="py-16 sm:py-24 lg:py-28 bg-[#F5F7FA] border-t border-[#E2E8F0]">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center space-y-4">
+          <div className="text-center space-y-3 sm:space-y-4">
             <span className="inline-block text-xs font-bold uppercase tracking-wider text-[#087F5B] bg-[#E6F4EF] px-3.5 py-1 rounded-full border border-[#A3E0CE]">
               Frequently Asked Questions
             </span>
-            <h2 className="text-3xl sm:text-4xl font-extrabold text-[#102A43] tracking-tight">
+            <h2 className="text-2xl sm:text-4xl font-extrabold text-[#102A43] tracking-tight">
               Got Questions? We Have Answers.
             </h2>
-            <p className="text-base text-[#334155] leading-relaxed">
+            <p className="text-sm sm:text-base text-[#334155] leading-relaxed">
               Learn how RSCMS supports savings group administrators and members every step of the way.
             </p>
           </div>
 
-          <div className="mt-12 space-y-4">
+          <div className="mt-10 sm:mt-12 space-y-3.5 sm:space-y-4">
             {faqs.map((faq, idx) => {
               const isOpen = openFaq === idx;
               return (
@@ -1067,18 +1076,18 @@ export default function LandingPage() {
                 >
                   <button
                     onClick={() => setOpenFaq(isOpen ? null : idx)}
-                    className="w-full text-left px-6 py-5 flex items-center justify-between gap-4 focus:outline-none focus:bg-[#F8FAFC]"
+                    className="w-full text-left px-5 sm:px-6 py-4 sm:py-5 flex items-center justify-between gap-4 focus:outline-none focus:bg-[#F8FAFC]"
                     aria-expanded={isOpen}
                   >
-                    <span className="font-bold text-base text-[#102A43]">{faq.question}</span>
+                    <span className="font-bold text-sm sm:text-base text-[#102A43]">{faq.question}</span>
                     <ChevronDown
-                      className={`w-5 h-5 text-[#64748B] shrink-0 transition-transform duration-200 ${
+                      className={`w-4 h-4 sm:w-5 sm:h-5 text-[#64748B] shrink-0 transition-transform duration-200 ${
                         isOpen ? "rotate-180 text-[#087F5B]" : ""
                       }`}
                     />
                   </button>
                   {isOpen && (
-                    <div className="px-6 pb-6 pt-1 text-sm text-[#334155] leading-relaxed border-t border-[#F1F5F9]">
+                    <div className="px-5 sm:px-6 pb-5 sm:pb-6 pt-1 text-xs sm:text-sm text-[#334155] leading-relaxed border-t border-[#F1F5F9]">
                       {faq.answer}
                     </div>
                   )}
@@ -1090,36 +1099,36 @@ export default function LandingPage() {
       </section>
 
       {/* ─── FINAL CTA SECTION ──────────────────────────────────────────────── */}
-      <section className="py-20 bg-[#102A43] text-white relative overflow-hidden">
+      <section className="py-16 sm:py-20 bg-[#102A43] text-white relative overflow-hidden">
         {/* Ambient background blur */}
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-4xl h-72 bg-[#087F5B]/20 rounded-full blur-3xl pointer-events-none" />
 
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center space-y-6 relative z-10">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center space-y-5 sm:space-y-6 relative z-10">
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-semibold bg-white/10 text-emerald-300">
-            <Sparkles className="w-3.5 h-3.5" />
+            <Sparkles className="w-3.5 h-3.5 shrink-0" />
             <span>MODERN GROUP SAVINGS PLATFORM</span>
           </div>
 
-          <h2 className="text-3xl sm:text-5xl font-extrabold tracking-tight text-white leading-tight">
+          <h2 className="text-2xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight text-white leading-tight">
             Bring Clarity and Confidence to Your Group Savings.
           </h2>
 
-          <p className="text-base sm:text-lg text-slate-300 max-w-2xl mx-auto leading-relaxed">
+          <p className="text-sm sm:text-base lg:text-lg text-slate-300 max-w-2xl mx-auto leading-relaxed px-2">
             Eliminate scattered notebooks, payment disputes, and calculation uncertainties. Provide your savings group
             with the transparent management and verifiable digital records they deserve.
           </p>
 
-          <div className="pt-4 flex flex-col sm:flex-row items-center justify-center gap-4">
+          <div className="pt-2 sm:pt-4 flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4">
             <Link
               href="/login"
-              className="w-full sm:w-auto inline-flex items-center justify-center gap-2.5 px-8 py-4 rounded-full text-base font-bold text-white bg-[#087F5B] hover:bg-[#066849] shadow-lg shadow-[#087F5B]/30 hover:shadow-xl transition-all transform hover:-translate-y-0.5"
+              className="w-full sm:w-auto inline-flex items-center justify-center gap-2.5 px-8 py-3.5 sm:py-4 rounded-full text-sm sm:text-base font-bold text-white bg-[#087F5B] hover:bg-[#066849] shadow-lg shadow-[#087F5B]/30 hover:shadow-xl transition-all transform hover:-translate-y-0.5"
             >
               <span>Access Admin Portal</span>
-              <ArrowRight className="w-5 h-5" />
+              <ArrowRight className="w-4 h-4 sm:w-5 sm:h-5" />
             </Link>
             <a
               href="#features"
-              className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-7 py-4 rounded-full text-base font-semibold text-white bg-white/10 hover:bg-white/20 transition-colors border border-white/15"
+              className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-7 py-3.5 sm:py-4 rounded-full text-sm sm:text-base font-semibold text-white bg-white/10 hover:bg-white/20 transition-colors border border-white/15"
             >
               <span>Explore Features</span>
             </a>
@@ -1128,8 +1137,8 @@ export default function LandingPage() {
       </section>
 
       {/* ─── FOOTER ─────────────────────────────────────────────────────────── */}
-      <footer id="contact" className="bg-[#0B1D2F] text-white border-t border-white/10 py-16">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
+      <footer id="contact" className="bg-[#0B1D2F] text-white border-t border-white/10 py-12 sm:py-16">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-10 sm:space-y-12">
           <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
             {/* Column 1: Brand Info */}
             <div className="space-y-4 md:col-span-2">
@@ -1149,7 +1158,7 @@ export default function LandingPage() {
                 Susu clubs, and community peer finances across Ghana.
               </p>
               <div className="pt-2 flex items-center gap-2 text-xs text-slate-300">
-                <Mail className="w-4 h-4 text-[#087F5B]" />
+                <Mail className="w-4 h-4 text-[#087F5B] shrink-0" />
                 <span>support@rscms.local</span>
               </div>
             </div>
@@ -1206,14 +1215,14 @@ export default function LandingPage() {
                     className="inline-flex items-center gap-1.5 text-xs font-bold text-emerald-400 hover:text-emerald-300 transition-colors"
                   >
                     <span>Admin Portal</span>
-                    <ArrowUpRight className="w-3.5 h-3.5" />
+                    <ArrowUpRight className="w-3.5 h-3.5 shrink-0" />
                   </Link>
                 </li>
               </ul>
             </div>
           </div>
 
-          <div className="pt-8 border-t border-white/10 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-slate-400">
+          <div className="pt-6 sm:pt-8 border-t border-white/10 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-slate-400 text-center sm:text-left">
             <p>© {new Date().getFullYear()} RSCMS. Designed for reliable community group savings in Ghana.</p>
             <p className="text-slate-400">Non-Custodial Financial Record Management</p>
           </div>

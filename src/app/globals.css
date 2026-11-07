@@ -96,7 +96,10 @@
   * {
     @apply border-border;
   }
+  html {
+    @apply overflow-x-hidden scroll-smooth;
+  }
   body {
-    @apply bg-background text-foreground antialiased;
+    @apply bg-background text-foreground antialiased overflow-x-hidden max-w-full;
   }
 }
