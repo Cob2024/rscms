@@ -196,13 +196,13 @@ export default function LandingPage() {
           {/* ─── CINEMATIC HERO VISUAL WITH LIVE FINANCIAL OVERLAYS ─── */}
           <div className="mt-12 max-w-5xl mx-auto relative">
             <div className="relative rounded-3xl overflow-hidden shadow-2xl border border-[#E2E8F0] bg-[#102A43]">
-              <div className="relative h-[320px] sm:h-[460px] md:h-[520px] w-full">
+              <div className="relative h-[340px] sm:h-[480px] md:h-[560px] w-full">
                 <Image
                   src="/images/hero-ghana-finance.jpg"
-                  alt="Ghanaian professionals and community members collaborating on transparent rotating group savings and mobile finance"
+                  alt="Ghanaian rotating group savings club members reviewing ledger contributions and cash payouts"
                   fill
                   priority
-                  className="object-cover object-center opacity-90 transition-transform duration-700 hover:scale-105"
+                  className="object-cover object-[center_30%] opacity-95 transition-transform duration-700 hover:scale-105"
                 />
                 {/* Ambient vignette and protective gradients */}
                 <div className="absolute inset-0 bg-gradient-to-t from-[#102A43] via-[#102A43]/20 to-transparent" />
