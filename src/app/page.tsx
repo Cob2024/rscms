@@ -2,6 +2,7 @@
 
 import React, { useState } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import {
   ShieldCheck,
   ArrowRight,
@@ -188,6 +189,65 @@ export default function LandingPage() {
               <div className="flex items-center gap-1.5">
                 <CheckCircle2 className="w-4 h-4 text-[#087F5B]" />
                 <span>Instant Official PDF Receipts</span>
+              </div>
+            </div>
+          </div>
+
+          {/* ─── CINEMATIC HERO VISUAL WITH LIVE FINANCIAL OVERLAYS ─── */}
+          <div className="mt-12 max-w-5xl mx-auto relative">
+            <div className="relative rounded-3xl overflow-hidden shadow-2xl border border-[#E2E8F0] bg-[#102A43]">
+              <div className="relative h-[320px] sm:h-[460px] md:h-[520px] w-full">
+                <Image
+                  src="/images/hero-community.jpg"
+                  alt="Young Ghanaian professionals collaborating on group savings and mobile finance"
+                  fill
+                  priority
+                  className="object-cover object-center opacity-90 transition-transform duration-700 hover:scale-105"
+                />
+                {/* Ambient vignette and protective gradients */}
+                <div className="absolute inset-0 bg-gradient-to-t from-[#102A43] via-[#102A43]/20 to-transparent" />
+                <div className="absolute inset-0 bg-gradient-to-r from-[#102A43]/30 via-transparent to-transparent" />
+
+                {/* Floating Micro-Badge Top Left: Verified Mobile Money Payment */}
+                <div className="absolute top-4 left-4 sm:top-6 sm:left-6 backdrop-blur-md bg-white/95 border border-white/60 p-3 sm:p-4 rounded-2xl shadow-xl flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-xl bg-[#E6F4EF] flex items-center justify-center text-[#087F5B] font-bold">
+                    <Smartphone className="w-5 h-5" />
+                  </div>
+                  <div>
+                    <div className="flex items-center gap-1.5">
+                      <span className="text-xs font-bold text-[#102A43]">MTN MoMo Verified</span>
+                      <CheckCircle2 className="w-3.5 h-3.5 text-[#087F5B]" />
+                    </div>
+                    <p className="text-[11px] font-semibold text-[#087F5B]">
+                      + GH₵ 250.00 <span className="text-[#64748B] font-normal">• Kwesi Arthur (Pos 2)</span>
+                    </p>
+                  </div>
+                </div>
+
+                {/* Floating Micro-Badge Bottom Right: Next Guaranteed Payout */}
+                <div className="absolute bottom-4 right-4 sm:bottom-6 sm:right-6 backdrop-blur-md bg-[#102A43]/90 text-white border border-white/15 p-3.5 sm:p-4 rounded-2xl shadow-xl space-y-1.5 max-w-[280px] sm:max-w-none">
+                  <div className="flex items-center justify-between gap-4">
+                    <span className="text-[10px] font-mono uppercase tracking-wider text-emerald-300">
+                      NEXT BENEFICIARY
+                    </span>
+                    <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-emerald-500/20 text-emerald-300">
+                      POSITION 1
+                    </span>
+                  </div>
+                  <div className="text-sm font-extrabold text-white flex items-center gap-2">
+                    <span>Ama Mensah</span>
+                    <span className="text-emerald-400 font-mono">GH₵ 1,000.00</span>
+                  </div>
+                  <p className="text-[10px] text-slate-300">
+                    4/4 monthly contributions verified • Ready for disbursement
+                  </p>
+                </div>
+
+                {/* Bottom Left Pill: Invariant guarantee */}
+                <div className="hidden sm:inline-flex absolute bottom-6 left-6 backdrop-blur-md bg-white/90 border border-white/40 px-3.5 py-2 rounded-full items-center gap-2 text-xs font-semibold text-[#102A43] shadow-md">
+                  <ShieldCheck className="w-4 h-4 text-[#087F5B]" />
+                  <span>Double-Entry Balance: ∑ Debits ≡ ∑ Credits (Δ = 0)</span>
+                </div>
               </div>
             </div>
           </div>
