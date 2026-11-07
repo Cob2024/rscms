@@ -198,8 +198,8 @@ export default function LandingPage() {
             <div className="relative rounded-3xl overflow-hidden shadow-2xl border border-[#E2E8F0] bg-[#102A43]">
               <div className="relative h-[320px] sm:h-[460px] md:h-[520px] w-full">
                 <Image
-                  src="/images/hero-community.jpg"
-                  alt="Young Ghanaian professionals collaborating on group savings and mobile finance"
+                  src="/images/hero-ghana-finance.jpg"
+                  alt="Ghanaian professionals and community members collaborating on transparent rotating group savings and mobile finance"
                   fill
                   priority
                   className="object-cover object-center opacity-90 transition-transform duration-700 hover:scale-105"
