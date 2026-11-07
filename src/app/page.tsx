@@ -775,7 +775,7 @@ export default function LandingPage() {
               </div>
             </div>
 
-            <div className="flex items-center gap-6 text-xs text-slate-300 font-medium">
+            <div className="flex flex-wrap items-center gap-6 text-xs text-slate-300 font-medium">
               <a href="#features" className="hover:text-white transition-colors">
                 Capabilities
               </a>
@@ -788,6 +788,12 @@ export default function LandingPage() {
               <a href="#security" className="hover:text-white transition-colors">
                 Security
               </a>
+              <Link href="/privacy" className="hover:text-white transition-colors">
+                Privacy Policy
+              </Link>
+              <Link href="/terms" className="hover:text-white transition-colors">
+                Terms &amp; Conditions
+              </Link>
               <Link href="/login" className="text-emerald-400 hover:text-emerald-300 font-bold transition-colors">
                 Admin Portal →
               </Link>
