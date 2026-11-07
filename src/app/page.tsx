@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import {
@@ -12,6 +12,8 @@ import {
   Smartphone,
   Users,
   ChevronDown,
+  ChevronLeft,
+  ChevronRight,
   Menu,
   X,
   Calendar,
@@ -30,6 +32,140 @@ export default function LandingPage() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [activeTab, setActiveTab] = useState<"summary" | "contributions" | "rotations" | "receipts">("summary");
   const [openFaq, setOpenFaq] = useState<number | null>(0);
+
+  // ─── Carousel State & Capabilities Data ─────────────────────────────────────
+  const [carouselIndex, setCarouselIndex] = useState(0);
+  const [itemsPerView, setItemsPerView] = useState(3);
+  const [isCarouselHovered, setIsCarouselHovered] = useState(false);
+  const [touchStartX, setTouchStartX] = useState<number | null>(null);
+
+  const features = [
+    {
+      id: "member-management",
+      icon: Users,
+      iconBg: "bg-[#E6F4EF]",
+      iconColor: "text-[#087F5B]",
+      accentBorder: "border-[#A3E0CE]",
+      accentTag: "text-[#087F5B]",
+      title: "Group & Member Management",
+      description:
+        "Easily configure group capacity, register active members with verified phone numbers, and assign transparent rotation payout positions with clear membership statuses.",
+      tag: "Configurable group sizes & contact directories",
+    },
+    {
+      id: "contribution-management",
+      icon: Calendar,
+      iconBg: "bg-[#EFF6FF]",
+      iconColor: "text-[#1D4ED8]",
+      accentBorder: "border-[#BFDBFE]",
+      accentTag: "text-[#1D4ED8]",
+      title: "Contribution Management",
+      description:
+        "Set standard contribution amounts per cycle period, customize due dates to fit member paydays, and instantly identify who has paid, who paid partially, and who is pending.",
+      tag: "Custom deadlines & automatic status tracking",
+    },
+    {
+      id: "payment-tracking",
+      icon: CreditCard,
+      iconBg: "bg-[#FFF4E5]",
+      iconColor: "text-[#92400E]",
+      accentBorder: "border-[#FED7AA]",
+      accentTag: "text-[#92400E]",
+      title: "Payment Tracking",
+      description:
+        "Record payments received across Cash, MTN Mobile Money, Telecel Cash, AT Money, and Bank Transfers. Log transaction reference numbers and admin verification for clean records.",
+      tag: "Supports 6 Ghanaian payment methods with reference tracking",
+    },
+    {
+      id: "rotation-payout",
+      icon: UserCheck,
+      iconBg: "bg-[#E6F4EF]",
+      iconColor: "text-[#087F5B]",
+      accentBorder: "border-[#A3E0CE]",
+      accentTag: "text-[#087F5B]",
+      title: "Rotation & Payout Management",
+      description:
+        "Organize scheduled payouts according to the group rotation. Authorize disbursements once period contributions are pooled, and record beneficiary acknowledgments with complete date stamps.",
+      tag: "Fair rotation queues & disbursement confirmation",
+    },
+    {
+      id: "financial-reports",
+      icon: Receipt,
+      iconBg: "bg-[#EFF6FF]",
+      iconColor: "text-[#1D4ED8]",
+      accentBorder: "border-[#BFDBFE]",
+      accentTag: "text-[#1D4ED8]",
+      title: "Financial Reports & Digital Receipts",
+      description:
+        "Instantly issue official digital receipts for every member payment. Generate cycle summary reports and download PDF documentation featuring exact figures and formal currency words.",
+      tag: "Downloadable PDF receipts & period statements",
+    },
+    {
+      id: "admin-oversight",
+      icon: Building2,
+      iconBg: "bg-[#F8FAFC]",
+      iconColor: "text-[#102A43]",
+      accentBorder: "border-[#CBD5E1]",
+      accentTag: "text-[#102A43]",
+      title: "Administrative Oversight",
+      description:
+        "Maintain an orderly financial history. Review outstanding contributions, handle payment adjustments, and ensure the cycle is fully completed and reconciled before initiating the next round.",
+      tag: "Reconciled cycle closing & comprehensive activity history",
+    },
+  ];
+
+  // Responsive items per view calculation
+  useEffect(() => {
+    const handleResize = () => {
+      if (typeof window !== "undefined") {
+        if (window.innerWidth < 640) {
+          setItemsPerView(1);
+        } else if (window.innerWidth < 1024) {
+          setItemsPerView(2);
+        } else {
+          setItemsPerView(3);
+        }
+      }
+    };
+    handleResize();
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
+  const maxIndex = Math.max(0, features.length - itemsPerView);
+
+  // Auto-play interval with pause-on-hover
+  useEffect(() => {
+    if (isCarouselHovered) return;
+    const interval = setInterval(() => {
+      setCarouselIndex((prev) => (prev >= maxIndex ? 0 : prev + 1));
+    }, 4200);
+    return () => clearInterval(interval);
+  }, [isCarouselHovered, maxIndex]);
+
+  const handlePrevFeature = () => {
+    setCarouselIndex((prev) => (prev <= 0 ? maxIndex : prev - 1));
+  };
+
+  const handleNextFeature = () => {
+    setCarouselIndex((prev) => (prev >= maxIndex ? 0 : prev + 1));
+  };
+
+  const handleTouchStart = (e: React.TouchEvent) => {
+    setTouchStartX(e.touches[0].clientX);
+  };
+
+  const handleTouchEnd = (e: React.TouchEvent) => {
+    if (touchStartX === null) return;
+    const touchEndX = e.changedTouches[0].clientX;
+    const diff = touchStartX - touchEndX;
+    if (diff > 50) {
+      handleNextFeature();
+    } else if (diff < -50) {
+      handlePrevFeature();
+    }
+    setTouchStartX(null);
+  };
 
   const faqs = [
     {
@@ -658,129 +794,136 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* ─── CORE FEATURES (6 VISUALLY CONSISTENT CARDS) ────────────────────── */}
-      <section id="features" className="py-16 sm:py-24 lg:py-28 bg-[#F5F7FA]">
+      {/* ─── CORE FEATURES (RESPONSIVE MOTION CAROUSEL) ────────────────────── */}
+      <section id="features" className="py-16 sm:py-24 lg:py-28 bg-[#F5F7FA] overflow-hidden">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center max-w-3xl mx-auto space-y-3.5 sm:space-y-4">
-            <span className="inline-block text-xs font-bold uppercase tracking-wider text-[#087F5B] bg-[#E6F4EF] px-3.5 py-1 rounded-full border border-[#A3E0CE]">
-              Core Capabilities
-            </span>
-            <h2 className="text-2xl sm:text-4xl font-extrabold text-[#102A43] tracking-tight">
-              Everything Your Savings Group Needs to Succeed
-            </h2>
-            <p className="text-sm sm:text-base text-[#334155] leading-relaxed">
-              Designed specifically to solve the real challenges of group savings: eliminating disputed payments,
-              tracking deadlines, and keeping every member on the same page.
-            </p>
+          {/* Section Header with Title & Navigation Controls */}
+          <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
+            <div className="max-w-2xl space-y-3.5 sm:space-y-4">
+              <span className="inline-block text-xs font-bold uppercase tracking-wider text-[#087F5B] bg-[#E6F4EF] px-3.5 py-1 rounded-full border border-[#A3E0CE]">
+                Core Capabilities
+              </span>
+              <h2 className="text-2xl sm:text-4xl font-extrabold text-[#102A43] tracking-tight">
+                Everything Your Savings Group Needs to Succeed
+              </h2>
+              <p className="text-sm sm:text-base text-[#334155] leading-relaxed">
+                Designed specifically to solve the real challenges of group savings: eliminating disputed payments,
+                tracking deadlines, and keeping every member on the same page.
+              </p>
+            </div>
+
+            {/* Carousel Navigation Cluster */}
+            <div className="flex items-center gap-3 shrink-0 self-start md:self-end">
+              <div className="hidden sm:flex items-center px-3 py-1.5 rounded-full bg-white border border-[#E2E8F0] text-xs font-bold text-[#64748B] font-mono shadow-sm">
+                <span className="text-[#102A43]">
+                  {String(carouselIndex + 1).padStart(2, "0")}
+                </span>
+                <span className="mx-1 text-[#CBD5E1]">/</span>
+                <span>{String(maxIndex + 1).padStart(2, "0")}</span>
+              </div>
+
+              <div className="flex items-center gap-2">
+                <button
+                  onClick={handlePrevFeature}
+                  aria-label="Previous capabilities slide"
+                  className="w-10 h-10 sm:w-11 sm:h-11 rounded-full bg-white border border-[#CBD5E1] text-[#102A43] hover:text-[#087F5B] hover:border-[#087F5B] hover:bg-[#F8FAFC] flex items-center justify-center transition-all shadow-sm focus:outline-none focus:ring-2 focus:ring-[#087F5B]/40 active:scale-95"
+                >
+                  <ChevronLeft className="w-5 h-5" />
+                </button>
+                <button
+                  onClick={handleNextFeature}
+                  aria-label="Next capabilities slide"
+                  className="w-10 h-10 sm:w-11 sm:h-11 rounded-full bg-[#102A43] text-white hover:bg-[#087F5B] flex items-center justify-center transition-all shadow-md hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-[#087F5B]/40 active:scale-95"
+                >
+                  <ChevronRight className="w-5 h-5" />
+                </button>
+              </div>
+            </div>
           </div>
 
-          <div className="mt-12 sm:mt-16 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
-            {/* Feature 1 */}
-            <div className="p-6 sm:p-8 rounded-3xl bg-white border border-[#E2E8F0] shadow-sm hover:shadow-md transition-all flex flex-col justify-between space-y-4">
-              <div className="space-y-4">
-                <div className="w-12 h-12 rounded-2xl bg-[#E6F4EF] text-[#087F5B] flex items-center justify-center font-bold">
-                  <Users className="w-6 h-6" />
-                </div>
-                <h3 className="text-lg sm:text-xl font-bold text-[#102A43]">Group &amp; Member Management</h3>
-                <p className="text-sm text-[#334155] leading-relaxed">
-                  Easily configure group capacity, register active members with verified phone numbers, and assign
-                  transparent rotation payout positions with clear membership statuses.
-                </p>
-              </div>
-              <div className="pt-2 flex items-center gap-1.5 text-xs font-semibold text-[#087F5B]">
-                <CheckCircle2 className="w-4 h-4 shrink-0" />
-                <span>Configurable group sizes &amp; contact directories</span>
+          {/* Carousel Viewport Container */}
+          <div
+            className="mt-10 sm:mt-14 relative"
+            onMouseEnter={() => setIsCarouselHovered(true)}
+            onMouseLeave={() => setIsCarouselHovered(false)}
+            onTouchStart={handleTouchStart}
+            onTouchEnd={handleTouchEnd}
+          >
+            {/* Sliding Track */}
+            <div className="-mx-3 sm:-mx-4 overflow-hidden py-3">
+              <div
+                className="flex transition-transform duration-700 ease-out"
+                style={{
+                  transform: `translateX(-${carouselIndex * (100 / itemsPerView)}%)`,
+                }}
+              >
+                {features.map((feature, idx) => {
+                  const Icon = feature.icon;
+                  const isCurrent =
+                    idx >= carouselIndex && idx < carouselIndex + itemsPerView;
+
+                  return (
+                    <div
+                      key={feature.id}
+                      className="w-full sm:w-1/2 lg:w-1/3 shrink-0 px-3 sm:px-4"
+                    >
+                      <div
+                        className={`h-full min-h-[350px] p-6 sm:p-8 rounded-3xl bg-white border border-[#E2E8F0] shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col justify-between group transform hover:-translate-y-1.5 ${
+                          isCurrent ? "ring-1 ring-[#087F5B]/15" : "opacity-95"
+                        }`}
+                      >
+                        <div className="space-y-4">
+                          <div className="flex items-center justify-between">
+                            <div
+                              className={`w-12 h-12 rounded-2xl ${feature.iconBg} ${feature.iconColor} flex items-center justify-center font-bold shadow-sm group-hover:scale-110 transition-transform duration-300`}
+                            >
+                              <Icon className="w-6 h-6" />
+                            </div>
+                            <span className="text-xs font-mono font-bold text-[#94A3B8]">
+                              0{idx + 1}
+                            </span>
+                          </div>
+                          <h3 className="text-lg sm:text-xl font-bold text-[#102A43] group-hover:text-[#087F5B] transition-colors">
+                            {feature.title}
+                          </h3>
+                          <p className="text-sm text-[#334155] leading-relaxed">
+                            {feature.description}
+                          </p>
+                        </div>
+                        <div
+                          className={`pt-4 mt-4 border-t border-[#F1F5F9] flex items-center gap-2 text-xs font-semibold ${feature.accentTag}`}
+                        >
+                          <CheckCircle2 className="w-4 h-4 shrink-0" />
+                          <span className="line-clamp-1">{feature.tag}</span>
+                        </div>
+                      </div>
+                    </div>
+                  );
+                })}
               </div>
             </div>
 
-            {/* Feature 2 */}
-            <div className="p-6 sm:p-8 rounded-3xl bg-white border border-[#E2E8F0] shadow-sm hover:shadow-md transition-all flex flex-col justify-between space-y-4">
-              <div className="space-y-4">
-                <div className="w-12 h-12 rounded-2xl bg-[#EFF6FF] text-[#1D4ED8] flex items-center justify-center font-bold">
-                  <Calendar className="w-6 h-6" />
-                </div>
-                <h3 className="text-lg sm:text-xl font-bold text-[#102A43]">Contribution Management</h3>
-                <p className="text-sm text-[#334155] leading-relaxed">
-                  Set standard contribution amounts per cycle period, customize due dates to fit member paydays, and
-                  instantly identify who has paid, who paid partially, and who is pending.
-                </p>
-              </div>
-              <div className="pt-2 flex items-center gap-1.5 text-xs font-semibold text-[#1D4ED8]">
-                <CheckCircle2 className="w-4 h-4 shrink-0" />
-                <span>Custom deadlines &amp; automatic status tracking</span>
-              </div>
+            {/* Pagination Indicators / Slide Dots */}
+            <div className="mt-8 flex items-center justify-center gap-2">
+              {Array.from({ length: maxIndex + 1 }).map((_, dotIdx) => (
+                <button
+                  key={dotIdx}
+                  onClick={() => setCarouselIndex(dotIdx)}
+                  aria-label={`Go to slide ${dotIdx + 1}`}
+                  className={`transition-all duration-300 rounded-full focus:outline-none focus:ring-2 focus:ring-[#087F5B]/40 ${
+                    carouselIndex === dotIdx
+                      ? "w-8 h-2.5 bg-[#087F5B] shadow-sm shadow-[#087F5B]/30"
+                      : "w-2.5 h-2.5 bg-[#CBD5E1] hover:bg-[#94A3B8]"
+                  }`}
+                />
+              ))}
             </div>
 
-            {/* Feature 3 */}
-            <div className="p-6 sm:p-8 rounded-3xl bg-white border border-[#E2E8F0] shadow-sm hover:shadow-md transition-all flex flex-col justify-between space-y-4">
-              <div className="space-y-4">
-                <div className="w-12 h-12 rounded-2xl bg-[#FFF4E5] text-[#92400E] flex items-center justify-center font-bold">
-                  <CreditCard className="w-6 h-6" />
-                </div>
-                <h3 className="text-lg sm:text-xl font-bold text-[#102A43]">Payment Tracking</h3>
-                <p className="text-sm text-[#334155] leading-relaxed">
-                  Record payments received across Cash, MTN Mobile Money, Telecel Cash, AT Money, and Bank Transfers.
-                  Log transaction reference numbers and admin verification for clean records.
-                </p>
-              </div>
-              <div className="pt-2 flex items-center gap-1.5 text-xs font-semibold text-[#92400E]">
-                <CheckCircle2 className="w-4 h-4 shrink-0" />
-                <span>Supports 6 Ghanaian payment methods with reference tracking</span>
-              </div>
-            </div>
-
-            {/* Feature 4 */}
-            <div className="p-6 sm:p-8 rounded-3xl bg-white border border-[#E2E8F0] shadow-sm hover:shadow-md transition-all flex flex-col justify-between space-y-4">
-              <div className="space-y-4">
-                <div className="w-12 h-12 rounded-2xl bg-[#E6F4EF] text-[#087F5B] flex items-center justify-center font-bold">
-                  <UserCheck className="w-6 h-6" />
-                </div>
-                <h3 className="text-lg sm:text-xl font-bold text-[#102A43]">Rotation &amp; Payout Management</h3>
-                <p className="text-sm text-[#334155] leading-relaxed">
-                  Organize scheduled payouts according to the group rotation. Authorize disbursements once period
-                  contributions are pooled, and record beneficiary acknowledgments with complete date stamps.
-                </p>
-              </div>
-              <div className="pt-2 flex items-center gap-1.5 text-xs font-semibold text-[#087F5B]">
-                <CheckCircle2 className="w-4 h-4 shrink-0" />
-                <span>Fair rotation queues &amp; disbursement confirmation</span>
-              </div>
-            </div>
-
-            {/* Feature 5 */}
-            <div className="p-6 sm:p-8 rounded-3xl bg-white border border-[#E2E8F0] shadow-sm hover:shadow-md transition-all flex flex-col justify-between space-y-4">
-              <div className="space-y-4">
-                <div className="w-12 h-12 rounded-2xl bg-[#EFF6FF] text-[#1D4ED8] flex items-center justify-center font-bold">
-                  <Receipt className="w-6 h-6" />
-                </div>
-                <h3 className="text-lg sm:text-xl font-bold text-[#102A43]">Financial Reports &amp; Digital Receipts</h3>
-                <p className="text-sm text-[#334155] leading-relaxed">
-                  Instantly issue official digital receipts for every member payment. Generate cycle summary reports and
-                  download PDF documentation featuring exact figures and formal currency words.
-                </p>
-              </div>
-              <div className="pt-2 flex items-center gap-1.5 text-xs font-semibold text-[#1D4ED8]">
-                <CheckCircle2 className="w-4 h-4 shrink-0" />
-                <span>Downloadable PDF receipts &amp; period statements</span>
-              </div>
-            </div>
-
-            {/* Feature 6 */}
-            <div className="p-6 sm:p-8 rounded-3xl bg-white border border-[#E2E8F0] shadow-sm hover:shadow-md transition-all flex flex-col justify-between space-y-4">
-              <div className="space-y-4">
-                <div className="w-12 h-12 rounded-2xl bg-[#F8FAFC] text-[#102A43] border border-[#CBD5E1] flex items-center justify-center font-bold">
-                  <Building2 className="w-6 h-6" />
-                </div>
-                <h3 className="text-lg sm:text-xl font-bold text-[#102A43]">Administrative Oversight</h3>
-                <p className="text-sm text-[#334155] leading-relaxed">
-                  Maintain an orderly financial history. Review outstanding contributions, handle payment adjustments,
-                  and ensure the cycle is fully completed and reconciled before initiating the next round.
-                </p>
-              </div>
-              <div className="pt-2 flex items-center gap-1.5 text-xs font-semibold text-[#102A43]">
-                <CheckCircle2 className="w-4 h-4 shrink-0" />
-                <span>Reconciled cycle closing &amp; comprehensive activity history</span>
-              </div>
+            {/* Micro Helpful Hint for users */}
+            <div className="mt-3 flex items-center justify-center gap-1.5 text-[11px] text-[#64748B]">
+              <span>Swipe or click arrows to explore capabilities</span>
+              <span className="inline-block w-1 h-1 rounded-full bg-[#CBD5E1]" />
+              <span className="hidden sm:inline">Auto-advances every 4 seconds • Pauses on hover</span>
             </div>
           </div>
         </div>
